@@ -1,0 +1,1834 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Hope for All Foundation | Building a Brighter Future, Together
+    </title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Montserrat (700) & Lato (400) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@400&family=Montserrat:wght@700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "primary-blue": "#1D4ED8",
+              "accent-teal": "#14B8A6",
+              "light-background": "#F0F9FF",
+              "dark-text": "#1F2937",
+              "light-text": "#E5E7EB",
+              "white-text": "#FFFFFF",
+            },
+            fontFamily: {
+              montserrat: ["Montserrat", "sans-serif"],
+              lato: ["Lato", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Favicon -->
+    <!-- FIX: Corrected file extension from .icon to .ico for the favicon -->
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+
+    <!-- Custom Styles -->
+    <style>
+      body {
+        font-family: "Lato", sans-serif;
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "Montserrat", sans-serif;
+      }
+
+      /* This animation CSS is correct. The JS was the problem. */
+      .fade-in-section {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+      }
+      .fade-in-section.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Particle Background */
+      #particles-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      /* Gallery overlay animations */
+      .gallery-item {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .gallery-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(29, 78, 216, 0.8);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .gallery-item:hover .gallery-overlay {
+        opacity: 1;
+      }
+
+      .gallery-item img {
+        transition: transform 0.5s ease;
+      }
+
+      .gallery-item:hover img {
+        transform: scale(1.1);
+      }
+    </style>
+  </head>
+  <body class="bg-light-background text-dark-text font-lato">
+    <!-- Header -->
+    <header
+      id="main-header"
+      class="fixed top-0 left-0 w-full z-50 transition-all duration-300"
+    >
+      <nav class="container mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+          <!-- Logo -->
+          <a href="#home" class="flex items-center gap-3">
+            <svg
+              xmlns="http://www.w.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="w-8 h-8 text-accent-teal"
+            >
+              <path
+                d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z"
+              />
+            </svg>
+            <span class="font-montserrat font-bold text-2xl text-white-text">
+              Hope for All Foundation
+            </span>
+          </a>
+
+          <!-- Desktop Navigation Links -->
+          <div class="hidden md:flex items-center space-x-8">
+            <a
+              href="#home"
+              class="font-montserrat font-bold hover:text-accent-teal transition-colors duration-300 text-white-text"
+            >
+              Home
+            </a>
+            <a
+              href="#mission"
+              class="font-montserrat font-bold hover:text-accent-teal transition-colors duration-300 text-white-text"
+            >
+              Our Mission
+            </a>
+            <a
+              href="#learn-more"
+              class="font-montserrat font-bold hover:text-accent-teal transition-colors duration-300 text-white-text"
+            >
+              Learn More
+            </a>
+            <a
+              href="#gallery"
+              class="font-montserrat font-bold hover:text-accent-teal transition-colors duration-300 text-white-text"
+            >
+              Gallery
+            </a>
+            <a
+              href="#invest-in-hope"
+              class="font-montserrat font-bold hover:text-accent-teal transition-colors duration-300 text-white-text"
+            >
+              Invest in Hope
+            </a>
+            <a
+              href="#contact"
+              class="font-montserrat font-bold hover:text-accent-teal transition-colors duration-300 text-white-text"
+            >
+              Contact
+            </a>
+          </div>
+
+          <!-- CTA Button (Desktop) & Mobile Menu Toggle -->
+          <div class="flex items-center gap-4">
+            <a
+              href="#donation"
+              class="hidden md:inline-block px-6 py-3 rounded-lg font-montserrat font-bold text-white-text bg-accent-teal hover:scale-105 transform transition-all duration-300 shadow-lg"
+            >
+              Donate Now
+            </a>
+
+            <!-- Hamburger Menu Button (Mobile) -->
+            <button
+              id="mobile-menu-button"
+              class="md:hidden p-2 rounded-md text-white-text hover:bg-primary-blue/20 focus:outline-none focus:ring-2 focus:ring-accent-teal"
+            >
+              <span class="sr-only">Open main menu</span>
+              <svg
+                class="h-6 w-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Mobile Menu -->
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden container mx-auto px-6 py-4 bg-primary-blue/95 backdrop-blur-sm"
+      >
+        <div class="flex flex-col items-center space-y-4">
+          <a
+            href="#home"
+            class="font-montserrat font-bold hover:text-accent-teal transition-colors duration-300 text-white-text"
+          >
+            Home
+          </a>
+          <a
+            href="#mission"
+            class="font-montserrat font-bold hover:text-accent-teal transition-colors duration-300 text-white-text"
+          >
+            Our Mission
+          </a>
+          <a
+            href="#learn-more"
+            class="font-montserrat font-bold hover:text-accent-teal transition-colors duration-300 text-white-text"
+          >
+            Learn More
+          </a>
+          <a
+            href="#gallery"
+            class="font-montserrat font-bold hover:text-accent-teal transition-colors duration-300 text-white-text"
+          >
+            Gallery
+          </a>
+          <a
+            href="#invest-in-hope"
+            class="font-montserrat font-bold hover:text-accent-teal transition-colors duration-300 text-white-text"
+          >
+            Invest in Hope
+          </a>
+          <a
+            href="#contact"
+            class="font-montserrat font-bold hover:text-accent-teal transition-colors duration-300 text-white-text"
+          >
+            Contact
+          </a>
+          <a
+            href="#donation"
+            class="mt-2 px-6 py-3 rounded-lg font-montserrat font-bold text-white-text bg-accent-teal hover:scale-105 transform transition-all duration-300"
+          >
+            Donate Now
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <!-- HERO SECTION START -->
+      <section
+        id="home"
+        class="relative min-h-screen flex items-center justify-center bg-primary-blue"
+      >
+        <!-- Particle Background -->
+        <canvas id="particles-canvas"></canvas>
+
+        <!-- Background Image -->
+        <div class="absolute inset-0 z-0">
+          <!-- FIX: Replaced problematic image path with a reliable placeholder. -->
+          <img
+            src="https://placehold.co/1920x1080/1F2937/FFFFFF?text=Hope+For+All"
+            alt="Building hope together in communities worldwide"
+            class="w-full h-full object-cover opacity-20"
+          />
+          <div class="absolute inset-0 bg-primary-blue/70"></div>
+        </div>
+
+        <!-- Content Container -->
+        <div
+          class="relative z-10 container mx-auto px-6 text-center text-white-text"
+        >
+          <!-- Main Headline -->
+          <h1
+            class="font-montserrat font-bold text-5xl md:text-7xl leading-tight fade-in-section"
+          >
+            Building a Brighter Future,
+            <span class="text-accent-teal">Together.</span>
+          </h1>
+
+          <!-- Sub-headline -->
+          <p
+            class="max-w-4xl mx-auto mt-6 text-xl md:text-2xl text-light-text leading-relaxed fade-in-section"
+          >
+            Hope for All Foundation is a global initiative dedicated to
+            eradicating poverty, fostering education, and providing critical
+            healthcare to the world's most vulnerable communities. Through
+            strategic partnerships and sustainable solutions, we create lasting
+            change that empowers individuals and transforms entire communities.
+          </p>
+
+          <!-- Call-to-Action Buttons -->
+          <div
+            class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-6 fade-in-section"
+          >
+            <!-- Primary Button -->
+            <a
+              href="#donation"
+              class="px-10 py-4 rounded-lg font-montserrat font-bold text-white-text bg-accent-teal hover:scale-105 transform transition-all duration-300 shadow-xl text-lg"
+            >
+              Make an Impact Today
+            </a>
+            <!-- Secondary Button -->
+            <a
+              href="#learn-more"
+              class="px-10 py-4 rounded-lg font-montserrat font-bold text-accent-teal bg-transparent border-2 border-accent-teal hover:bg-accent-teal hover:text-white-text transition-all duration-300 text-lg"
+            >
+              Discover Our Work
+            </a>
+          </div>
+        </div>
+      </section>
+      <!-- HERO SECTION END -->
+
+      <!-- OUR MISSION SECTION START -->
+      <section
+        id="mission"
+        class="py-20 sm:py-28 bg-white-text fade-in-section"
+      >
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+          <!-- Section Header -->
+          <div class="text-center mb-16">
+            <h2
+              class="text-4xl sm:text-5xl font-montserrat font-bold text-primary-blue"
+            >
+              Our Three Pillars of Change
+            </h2>
+            <p
+              class="mt-6 text-xl text-dark-text max-w-3xl mx-auto leading-relaxed"
+            >
+              Every initiative we undertake is built upon these foundational
+              pillars, designed to create sustainable, measurable impact in the
+              communities we serve. Our holistic approach ensures that change is
+              not just immediate, but lasting.
+            </p>
+          </div>
+
+          <!-- Pillars Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 mt-16">
+            <!-- Education Pillar -->
+            <div
+              class="bg-light-background rounded-2xl p-8 border-2 border-primary-blue/10 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-accent-teal/50 fade-in-section"
+            >
+              <!-- Icon -->
+              <div
+                class="w-16 h-16 bg-accent-teal rounded-full flex items-center justify-center mb-6"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-8 h-8 text-white-text"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                  />
+                </svg>
+              </div>
+              <!-- Title -->
+              <h3
+                class="text-2xl font-montserrat font-bold text-primary-blue mb-4"
+              >
+                Education & Digital Literacy
+              </h3>
+              <!-- Description -->
+              <p class="text-dark-text leading-relaxed mb-6">
+                We believe education is the cornerstone of sustainable
+                development. Our comprehensive education programs go beyond
+                traditional classroom learning to include digital literacy
+                initiatives, teacher training programs, and scholarship
+                opportunities for underserved youth. We establish learning
+                centers in remote areas, provide tablets and internet
+                connectivity, and develop culturally relevant curricula that
+                prepare students for the modern economy.
+              </p>
+              <p class="text-dark-text leading-relaxed">
+                Through partnerships with local educators and international
+                technology companies, we're bridging the digital divide and
+                ensuring that geographical location doesn't determine
+                educational opportunity. Our programs have reached over 50,000
+                students across 15 countries, with a focus on girls' education
+                and STEM learning.
+              </p>
+            </div>
+
+            <!-- Healthcare Pillar -->
+            <div
+              class="bg-light-background rounded-2xl p-8 border-2 border-primary-blue/10 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-accent-teal/50 fade-in-section"
+            >
+              <!-- Icon -->
+              <div
+                class="w-16 h-16 bg-accent-teal rounded-full flex items-center justify-center mb-6"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-8 h-8 text-white-text"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                  />
+                </svg>
+              </div>
+              <!-- Title -->
+              <h3
+                class="text-2xl font-montserrat font-bold text-primary-blue mb-4"
+              >
+                Healthcare & Wellness
+              </h3>
+              <!-- Description -->
+              <p class="text-dark-text leading-relaxed mb-6">
+                Access to quality healthcare should never be determined by
+                economic status or location. Our healthcare initiatives
+                encompass preventive care, maternal health programs, mental
+                health support, and emergency medical interventions. We deploy
+                mobile medical clinics to remote villages, train community
+                health workers, and establish sustainable health monitoring
+                systems.
+              </p>
+              <p class="text-dark-text leading-relaxed">
+                Our holistic approach includes clean water and sanitation
+                projects, nutrition education programs, and partnerships with
+                local medical professionals. We've facilitated over 100,000
+                medical consultations, built 25 health clinics, and provided
+                clean water access to more than 200,000 people. Every health
+                intervention is designed to build local capacity and ensure
+                long-term sustainability.
+              </p>
+            </div>
+
+            <!-- Sustainable Development Pillar -->
+            <div
+              class="bg-light-background rounded-2xl p-8 border-2 border-primary-blue/10 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-accent-teal/50 fade-in-section"
+            >
+              <!-- Icon -->
+              <div
+                class="w-16 h-16 bg-accent-teal rounded-full flex items-center justify-center mb-6"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-8 h-8 text-white-text"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                  />
+                </svg>
+              </div>
+              <!-- Title -->
+              <h3
+                class="text-2xl font-montserrat font-bold text-primary-blue mb-4"
+              >
+                Sustainable Development
+              </h3>
+              <!-- Description -->
+              <p class="text-dark-text leading-relaxed mb-6">
+                True development must be sustainable, empowering communities to
+                become self-sufficient while protecting the environment for
+                future generations. Our sustainable development programs focus
+                on renewable energy adoption, sustainable agriculture training,
+                microfinance initiatives, and environmental conservation
+                projects that create both economic opportunity and ecological
+                protection.
+              </p>
+              <p class="text-dark-text leading-relaxed">
+                We partner with local entrepreneurs to establish solar energy
+                cooperatives, teach climate-resilient farming techniques, and
+                provide microloans that help families start sustainable
+                businesses. Our projects have installed over 1,000 solar
+                systems, trained 5,000 farmers in sustainable practices, and
+                distributed microloans totaling $2 million, with a 96% repayment
+                rate demonstrating the effectiveness of our community-centered
+                approach.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- OUR MISSION SECTION END -->
+
+      <!-- GALLERY SECTION START -->
+      <section
+        id="gallery"
+        class="py-20 sm:py-28 bg-primary-blue fade-in-section"
+      >
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+          <!-- Section Header -->
+          <div class="text-center mb-16">
+            <h2
+              class="text-4xl sm:text-5xl font-montserrat font-bold text-white-text"
+            >
+              Stories of Impact
+            </h2>
+            <p
+              class="mt-6 text-xl text-light-text max-w-3xl mx-auto leading-relaxed"
+            >
+              Every photograph represents a life transformed, a community
+              empowered, and hope restored. These are the faces and places where
+              your support creates lasting change.
+            </p>
+          </div>
+
+          <!-- Gallery Grid -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
+            <!-- Image 1 (spans 2 columns) -->
+            <div
+              class="md:col-span-2 gallery-item rounded-xl overflow-hidden shadow-2xl fade-in-section"
+            >
+              <!-- FIX: Placeholder image -->
+              <img
+                src="images/deski-jayantoro-Lolef9QKdtU-unsplash.jpg"
+                alt="Children in newly built classroom with digital learning tablets"
+                class="w-full h-80 object-cover"
+              />
+              <div class="gallery-overlay">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-12 h-12 text-white-text mb-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                  />
+                </svg>
+                <span class="text-white-text font-montserrat font-bold text-lg"
+                  >View Story</span
+                >
+              </div>
+            </div>
+
+            <!-- Image 2 -->
+            <div
+              class="gallery-item rounded-xl overflow-hidden shadow-2xl fade-in-section"
+            >
+              <!-- FIX: Placeholder image -->
+              <img
+                src="images/haseeb-modi-OcDJhBm8Jnc-unsplash.jpg"
+                alt="Community health worker providing medical care"
+                class="w-full h-80 object-cover"
+              />
+              <div class="gallery-overlay">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-12 h-12 text-white-text mb-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                  />
+                </svg>
+                <span class="text-white-text font-montserrat font-bold text-lg"
+                  >View Story</span
+                >
+              </div>
+            </div>
+
+            <!-- Image 3 -->
+            <div
+              class="gallery-item rounded-xl overflow-hidden shadow-2xl fade-in-section"
+            >
+              <!-- FIX: Placeholder image -->
+              <img
+                src="images/herlambang-tinasih-gusti-jsF0znM5uHk-unsplash.jpg"
+                alt="Solar panel installation bringing clean energy to rural village"
+                class="w-full h-80 object-cover"
+              />
+              <div class="gallery-overlay">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-12 h-12 text-white-text mb-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                  />
+                </svg>
+                <span class="text-white-text font-montserrat font-bold text-lg"
+                  >View Story</span
+                >
+              </div>
+            </div>
+
+            <!-- Image 4 -->
+            <div
+              class="gallery-item rounded-xl overflow-hidden shadow-2xl fade-in-section"
+            >
+              <!-- FIX: Placeholder image -->
+              <img
+                src="images/jerry-wang-KV9F7Ypl2N0-unsplash.jpg"
+                alt="Women entrepreneurs in microfinance program"
+                class="w-full h-80 object-cover"
+              />
+              <div class="gallery-overlay">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-12 h-12 text-white-text mb-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                  />
+                </svg>
+                <span class="text-white-text font-montserrat font-bold text-lg"
+                  >View Story</span
+                >
+              </div>
+            </div>
+
+            <!-- Image 5 -->
+            <div
+              class="gallery-item rounded-xl overflow-hidden shadow-2xl fade-in-section"
+            >
+              <!-- FIX: Placeholder image -->
+              <img
+                src="images/markus-spiske-lYGnhDJIe9M-unsplash.jpg"
+                alt="Clean water well celebration with community members"
+                class="w-full h-80 object-cover"
+              />
+              <div class="gallery-overlay">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-12 h-12 text-white-text mb-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                  />
+                </svg>
+                <span class="text-white-text font-montserrat font-bold text-lg"
+                  >View Story</span
+                >
+              </div>
+            </div>
+
+            <!-- Image 6 (spans 2 columns) -->
+            <div
+              class="md:col-span-2 gallery-item rounded-xl overflow-hidden shadow-2xl fade-in-section"
+            >
+              <!-- FIX: Placeholder image -->
+              <img
+                src="images/max-smith-0HCCpeWzxnI-unsplash.jpg"
+                alt="Agricultural training program teaching sustainable farming"
+                class="w-full h-80 object-cover"
+              />
+              <div class="gallery-overlay">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-12 h-12 text-white-text mb-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                  />
+                </svg>
+                <span class="text-white-text font-montserrat font-bold text-lg"
+                  >View Story</span
+                >
+              </div>
+            </div>
+
+            <!-- Image 7 -->
+            <div
+              class="gallery-item rounded-xl overflow-hidden shadow-2xl fade-in-section"
+            >
+              <!-- FIX: Placeholder image -->
+              <img
+                src="images/haseeb-modi-OcDJhBm8Jnc-unsplash.jpg"
+                alt="Young girl studying with new educational materials"
+                class="w-full h-80 object-cover"
+              />
+              <div class="gallery-overlay">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-12 h-12 text-white-text mb-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                  />
+                </svg>
+                <span class="text-white-text font-montserrat font-bold text-lg"
+                  >View Story</span
+                >
+              </div>
+            </div>
+
+            <!-- Image 7 -->
+            <div
+              class="gallery-item rounded-xl overflow-hidden shadow-2xl fade-in-section"
+            >
+              <!-- FIX: Placeholder image -->
+              <img
+                src="images/nayan-gavli-BeQDYGrOo_g-unsplash.jpg"
+                alt="Young girl studying with new educational materials"
+                class="w-full h-80 object-cover"
+              />
+              <div class="gallery-overlay">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-12 h-12 text-white-text mb-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                  />
+                </svg>
+                <span class="text-white-text font-montserrat font-bold text-lg"
+                  >View Story</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- GALLERY SECTION END -->
+
+      <!-- INVEST IN HOPE SECTION START -->
+      <section
+        id="invest-in-hope"
+        class="py-20 sm:py-28 bg-white-text fade-in-section"
+      >
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+          <!-- Two-Column Layout -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+            <!-- Left Column - Text Content -->
+            <div>
+              <h2
+                class="text-4xl sm:text-5xl font-montserrat font-bold text-primary-blue mb-8"
+              >
+                Invest in a Legacy of Hope
+              </h2>
+              <p class="text-lg text-dark-text leading-relaxed mb-6">
+                For visionary investors and philanthropic partners seeking to
+                create transformational impact, Hope for All Foundation offers
+                unprecedented opportunities to build sustainable change at
+                scale. Our approach goes beyond traditional charitable giving –
+                we create strategic partnerships that leverage financial
+                resources, expertise, and innovation to address systemic
+                challenges facing the world's most vulnerable populations. Every
+                dollar invested with us is meticulously tracked through our
+                proprietary impact measurement system, ensuring complete
+                transparency and demonstrable returns on social investment.
+              </p>
+              <p class="text-lg text-dark-text leading-relaxed">
+                Our partnership model provides accredited investors with
+                comprehensive impact reporting, site visit opportunities, and
+                direct engagement with project leaders on the ground. With
+                operational transparency that exceeds industry standards, we
+                maintain an overhead ratio of less than 8%, ensuring that your
+                investment creates maximum field impact. Our five-year strategic
+                plan projects reaching 1 million beneficiaries across 30
+                countries, with each major initiative designed for scalability
+                and replicability. We seek partners who share our long-term
+                vision of sustainable development and are prepared to make
+                multi-year commitments that can transform entire communities
+                from dependency to self-sufficiency.
+              </p>
+            </div>
+
+            <!-- Right Column - Contact Form -->
+            <div
+              class="bg-light-background rounded-2xl p-8 border-2 border-primary-blue/10 shadow-xl"
+            >
+              <h3
+                class="text-2xl font-montserrat font-bold text-primary-blue mb-6"
+              >
+                Partnership & Investment Inquiries
+              </h3>
+              <form class="space-y-6">
+                <!-- Full Name -->
+                <div>
+                  <label
+                    for="partner-name"
+                    class="block text-sm font-montserrat font-bold text-dark-text mb-2"
+                  >
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="partner-name"
+                    name="partner-name"
+                    required
+                    class="w-full px-4 py-3 bg-white-text border border-primary-blue/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-teal focus:border-transparent"
+                  />
+                </div>
+
+                <!-- Organization -->
+                <div>
+                  <label
+                    for="organization"
+                    class="block text-sm font-montserrat font-bold text-dark-text mb-2"
+                  >
+                    Organization (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    id="organization"
+                    name="organization"
+                    class="w-full px-4 py-3 bg-white-text border border-primary-blue/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-teal focus:border-transparent"
+                  />
+                </div>
+
+                <!-- Email Address -->
+                <div>
+                  <label
+                    for="partner-email"
+                    class="block text-sm font-montserrat font-bold text-dark-text mb-2"
+                  >
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    id="partner-email"
+                    name="partner-email"
+                    required
+                    class="w-full px-4 py-3 bg-white-text border border-primary-blue/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-teal focus:border-transparent"
+                  />
+                </div>
+
+                <!-- Phone Number -->
+                <div>
+                  <label
+                    for="partner-phone"
+                    class="block text-sm font-montserrat font-bold text-dark-text mb-2"
+                  >
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    id="partner-phone"
+                    name="partner-phone"
+                    required
+                    class="w-full px-4 py-3 bg-white-text border border-primary-blue/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-teal focus:border-transparent"
+                  />
+                </div>
+
+                <!-- Vision & Inquiry -->
+                <div>
+                  <label
+                    for="partner-inquiry"
+                    class="block text-sm font-montserrat font-bold text-dark-text mb-2"
+                  >
+                    Your Vision & Inquiry *
+                  </label>
+                  <textarea
+                    id="partner-inquiry"
+                    name="partner-inquiry"
+                    rows="5"
+                    required
+                    class="w-full px-4 py-3 bg-white-text border border-primary-blue/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-teal focus:border-transparent resize-none"
+                  ></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <button
+                  type="submit"
+                  class="w-full py-3 px-6 rounded-lg font-montserrat font-bold text-white-text bg-accent-teal hover:scale-105 transform transition-all duration-300 shadow-lg"
+                >
+                  Submit Partnership Inquiry
+                </button>
+              </form>
+
+              <!-- Disclaimer -->
+              <p class="text-xs text-dark-text/70 mt-6 italic leading-relaxed">
+                This contact form is intended for accredited investors,
+                philanthropic partners, and corporate sponsorship inquiries
+                only. All submissions are confidential. For general questions or
+                donations, please use the main contact form. Direct contact with
+                our founder's office can be arranged following an initial
+                review.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- INVEST IN HOPE SECTION END -->
+
+      <!-- FIX: Moved the new sections inside the <main> tag for correct semantic structure -->
+
+      <!-- IMPACT METRICS SECTION START -->
+      <section class="py-20 sm:py-28 bg-white-text fade-in-section">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+          <div class="text-center mb-16">
+            <h2
+              class="text-4xl sm:text-5xl font-montserrat font-bold text-primary-blue"
+            >
+              Our Global Impact
+            </h2>
+            <p
+              class="mt-6 text-xl text-dark-text max-w-3xl mx-auto leading-relaxed"
+            >
+              Through dedication and your support, we've created measurable
+              change worldwide.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Impact Card 1 -->
+            <div
+              class="bg-light-background p-8 rounded-2xl text-center transform hover:scale-105 transition-all duration-300"
+            >
+              <div
+                class="text-5xl font-montserrat font-bold text-accent-teal mb-4 counter"
+                data-target="500000"
+              >
+                0
+              </div>
+              <p class="text-dark-text font-montserrat">Lives Impacted</p>
+            </div>
+
+            <!-- Impact Card 2 -->
+            <div
+              class="bg-light-background p-8 rounded-2xl text-center transform hover:scale-105 transition-all duration-300"
+            >
+              <div
+                class="text-5xl font-montserrat font-bold text-accent-teal mb-4 counter"
+                data-target="75"
+              >
+                0
+              </div>
+              <p class="text-dark-text font-montserrat">Countries Reached</p>
+            </div>
+
+            <!-- Impact Card 3 -->
+            <div
+              class="bg-light-background p-8 rounded-2xl text-center transform hover:scale-105 transition-all duration-300"
+            >
+              <div
+                class="text-5xl font-montserrat font-bold text-accent-teal mb-4 counter"
+                data-target="1200"
+              >
+                0
+              </div>
+              <p class="text-dark-text font-montserrat">Projects Completed</p>
+            </div>
+
+            <!-- Impact Card 4 -->
+            <div
+              class="bg-light-background p-8 rounded-2xl text-center transform hover:scale-105 transition-all duration-300"
+            >
+              <div
+                class="text-5xl font-montserrat font-bold text-accent-teal mb-4 counter"
+                data-target="25"
+              >
+                0
+              </div>
+              <p class="text-dark-text font-montserrat">Million USD Invested</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- IMPACT METRICS SECTION END -->
+
+      <!-- DONATION SECTION START -->
+      <section class="py-20 sm:py-28 bg-primary-blue fade-in-section">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8" id="donation">
+          <div class="text-center mb-16">
+            <h2
+              class="text-4xl sm:text-5xl font-montserrat font-bold text-white-text"
+            >
+              Make a Difference Today
+            </h2>
+            <p
+              class="mt-6 text-xl text-light-text max-w-3xl mx-auto leading-relaxed"
+            >
+              Your donation helps us create lasting change in communities
+              worldwide.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Monthly Donation -->
+            <div
+              class="bg-white-text/10 backdrop-blur-sm p-8 rounded-2xl border border-light-text/20"
+            >
+              <h3
+                class="text-2xl font-montserrat font-bold text-white-text mb-4"
+              >
+                Monthly Impact
+              </h3>
+              <div class="space-y-4">
+                <button
+                  class="w-full py-3 px-4 rounded-lg bg-accent-teal/20 text-white-text hover:bg-accent-teal transition-all duration-300"
+                >
+                  $25 / month
+                </button>
+                <button
+                  class="w-full py-3 px-4 rounded-lg bg-accent-teal/20 text-white-text hover:bg-accent-teal transition-all duration-300"
+                >
+                  $50 / month
+                </button>
+                <button
+                  class="w-full py-3 px-4 rounded-lg bg-accent-teal/20 text-white-text hover:bg-accent-teal transition-all duration-300"
+                >
+                  $100 / month
+                </button>
+                <button
+                  class="w-full py-3 px-4 rounded-lg bg-accent-teal text-white-text hover:scale-105 transition-all duration-300"
+                >
+                  Custom Amount
+                </button>
+              </div>
+            </div>
+
+            <!-- One-Time Donation -->
+            <div
+              class="bg-white-text/10 backdrop-blur-sm p-8 rounded-2xl border border-light-text/20"
+            >
+              <h3
+                class="text-2xl font-montserrat font-bold text-white-text mb-4"
+              >
+                One-Time Gift
+              </h3>
+              <div class="space-y-4">
+                <button
+                  class="w-full py-3 px-4 rounded-lg bg-accent-teal/20 text-white-text hover:bg-accent-teal transition-all duration-300"
+                >
+                  $100
+                </button>
+                <button
+                  class="w-full py-3 px-4 rounded-lg bg-accent-teal/20 text-white-text hover:bg-accent-teal transition-all duration-300"
+                >
+                  $250
+                </button>
+                <button
+                  class="w-full py-3 px-4 rounded-lg bg-accent-teal/20 text-white-text hover:bg-accent-teal transition-all duration-300"
+                >
+                  $500
+                </button>
+                <button
+                  class="w-full py-3 px-4 rounded-lg bg-accent-teal text-white-text hover:scale-105 transition-all duration-300"
+                >
+                  Custom Amount
+                </button>
+              </div>
+            </div>
+
+            <!-- Other Ways to Give -->
+            <div
+              class="bg-white-text/10 backdrop-blur-sm p-8 rounded-2xl border border-light-text/20"
+            >
+              <h3
+                class="text-2xl font-montserrat font-bold text-white-text mb-4"
+              >
+                Other Ways to Give
+              </h3>
+              <div class="space-y-4">
+                <a
+                  href="#"
+                  class="flex items-center gap-3 py-3 px-4 rounded-lg bg-accent-teal/20 text-white-text hover:bg-accent-teal transition-all duration-300"
+                >
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                      d="M21 6h-2l-1.27-1.27A2.49 2.49 0 0 0 16 4h-2.5A2.5 2.5 0 0 0 11 6.5V11h1.5V6.5c0-.83.67-1.5 1.5-1.5H16c.83 0 1.5.67 1.5 1.5V11H19v2h-1.5v4.5c0 .83-.67 1.5-1.5 1.5h-2.5c-.83 0-1.5-.67-1.5-1.5V13H11v4.5A2.5 2.5 0 0 0 13.5 20H16a2.5 2.5 0 0 0 2.5-2.5V13H21V6z"
+                    />
+                  </svg>
+                  Planned Giving
+                </a>
+                <a
+                  href="#"
+                  class="flex items-center gap-3 py-3 px-4 rounded-lg bg-accent-teal/20 text-white-text hover:bg-accent-teal transition-all duration-300"
+                >
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                      d="M21 4H3a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 14H3V6h18v12z"
+                    />
+                  </svg>
+                  Corporate Giving
+                </a>
+                <a
+                  href="#"
+                  class="flex items-center gap-3 py-3 px-4 rounded-lg bg-accent-teal/20 text-white-text hover:bg-accent-teal transition-all duration-300"
+                >
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+                    />
+                  </svg>
+                  Stock Donations
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- DONATION SECTION END -->
+
+      <!-- LEARN MORE SECTION START -->
+      <section class="py-20 sm:py-28 bg-white-text fade-in-section">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8" id="learn-more">
+          <div class="text-center mb-16">
+            <h2
+              class="text-4xl sm:text-5xl font-montserrat font-bold text-primary-blue"
+            >
+              Learn More About Our Work
+            </h2>
+            <p
+              class="mt-6 text-xl text-dark-text max-w-3xl mx-auto leading-relaxed"
+            >
+              Discover how we're creating sustainable change through various
+              initiatives and programs.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Resource Card 1 -->
+            <div
+              class="group bg-light-background rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
+            >
+              <div class="relative overflow-hidden">
+                <!-- FIX: Placeholder image -->
+                <img
+                  src="images/gabrielle-henderson-HJckKnwCXxQ-unsplash.jpg"
+                  alt="Annual Report"
+                  class="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                />
+                <div
+                  class="absolute inset-0 bg-primary-blue/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  <svg
+                    class="w-12 h-12 text-white-text"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div class="p-6">
+                <h3
+                  class="text-xl font-montserrat font-bold text-primary-blue mb-2"
+                >
+                  Annual Report
+                </h3>
+                <p class="text-dark-text mb-4">
+                  Review our impact and financial statements from the past year.
+                </p>
+                <a
+                  href="#"
+                  class="inline-flex items-center text-accent-teal hover:text-primary-blue transition-colors duration-300"
+                >
+                  Download PDF
+                  <svg
+                    class="w-5 h-5 ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    />
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <!-- Resource Card 2 -->
+            <div
+              class="group bg-light-background rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
+            >
+              <div class="relative overflow-hidden">
+                <!-- FIX: Placeholder image -->
+                <img
+                  src="images/vedhas-pathak-fP03kznKAXA-unsplash.jpg"
+                  alt="Success Stories"
+                  class="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                />
+                <div
+                  class="absolute inset-0 bg-primary-blue/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  <svg
+                    class="w-12 h-12 text-white-text"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div class="p-6">
+                <h3
+                  class="text-xl font-montserrat font-bold text-primary-blue mb-2"
+                >
+                  Success Stories
+                </h3>
+                <p class="text-dark-text mb-4">
+                  Watch videos of lives transformed through our programs.
+                </p>
+                <a
+                  href="#"
+                  class="inline-flex items-center text-accent-teal hover:text-primary-blue transition-colors duration-300"
+                >
+                  Watch Stories
+                  <svg
+                    class="w-5 h-5 ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    />
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <!-- Resource Card 3 -->
+            <div
+              class="group bg-light-background rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
+            >
+              <div class="relative overflow-hidden">
+                <!-- FIX: Placeholder image -->
+                <img
+                  src="images/brett-jordan-LPZy4da9aRo-unsplash.jpg"
+                  alt="Newsletter"
+                  class="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                />
+                <div
+                  class="absolute inset-0 bg-primary-blue/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  <svg
+                    class="w-12 h-12 text-white-text"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div class="p-6">
+                <h3
+                  class="text-xl font-montserrat font-bold text-primary-blue mb-2"
+                >
+                  Newsletter
+                </h3>
+                <p class="text-dark-text mb-4">
+                  Subscribe to our monthly updates and impact stories.
+                </p>
+                <a
+                  href="#"
+                  class="inline-flex items-center text-accent-teal hover:text-primary-blue transition-colors duration-300"
+                >
+                  Subscribe Now
+                  <svg
+                    class="w-5 h-5 ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- LEARN MORE SECTION END -->
+
+      <!-- CONTACT & FOOTER SECTION START -->
+      <section
+        id="contact"
+        class="py-20 sm:py-28 bg-primary-blue fade-in-section"
+      >
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+          <!-- Section Header -->
+          <div class="text-center mb-16">
+            <h2
+              class="text-4xl sm:text-5xl font-montserrat font-bold text-white-text"
+            >
+              Get In Touch
+            </h2>
+            <p
+              class="mt-6 text-xl text-light-text max-w-3xl mx-auto leading-relaxed"
+            >
+              Have questions about our work or want to explore partnership
+              opportunities? Our team is here to help you understand how you can
+              be part of building hope around the world.
+            </p>
+          </div>
+
+          <!-- Two-Column Layout -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-12">
+            <!-- Contact Form -->
+            <form class="space-y-6">
+              <!-- Full Name -->
+              <div>
+                <label
+                  for="contact-name"
+                  class="block text-sm font-montserrat font-bold text-light-text mb-2"
+                >
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  id="contact-name"
+                  name="contact-name"
+                  required
+                  class="w-full px-4 py-3 bg-white-text/10 border border-light-text/20 rounded-lg text-white-text placeholder-light-text/50 focus:outline-none focus:ring-2 focus:ring-accent-teal focus:border-transparent backdrop-blur-sm"
+                />
+              </div>
+              <!-- Email -->
+              <div>
+                <label
+                  for="contact-email"
+                  class="block text-sm font-montserrat font-bold text-light-text mb-2"
+                >
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  id="contact-email"
+                  name="contact-email"
+                  required
+                  class="w-full px-4 py-3 bg-white-text/10 border border-light-text/20 rounded-lg text-white-text placeholder-light-text/50 focus:outline-none focus:ring-2 focus:ring-accent-teal focus:border-transparent backdrop-blur-sm"
+                />
+              </div>
+              <!-- Message -->
+              <div>
+                <label
+                  for="contact-message"
+                  class="block text-sm font-montserrat font-bold text-light-text mb-2"
+                >
+                  Message *
+                </label>
+                <textarea
+                  id="contact-message"
+                  name="contact-message"
+                  rows="6"
+                  required
+                  class="w-full px-4 py-3 bg-white-text/10 border border-light-text/20 rounded-lg text-white-text placeholder-light-text/50 focus:outline-none focus:ring-2 focus:ring-accent-teal focus:border-transparent backdrop-blur-sm resize-none"
+                ></textarea>
+              </div>
+              <!-- Submit Button -->
+              <button
+                type="submit"
+                class="w-full py-3 px-6 rounded-lg font-montserrat font-bold text-white-text bg-accent-teal hover:scale-105 transform transition-all duration-300 shadow-lg"
+              >
+                Send Message
+              </button>
+            </form>
+
+            <!-- Contact Details -->
+            <div class="flex flex-col gap-8 text-light-text">
+              <!-- Address -->
+              <div class="flex items-start gap-4">
+                <div
+                  class="w-12 h-12 bg-accent-teal rounded-full flex items-center justify-center flex-shrink-0"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-6 h-6 text-white-text"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-montserrat font-bold text-white-text mb-1">
+                    Global Headquarters
+                  </h4>
+                  <p>456 Hope Avenue, Unity District, 90210</p>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="flex items-start gap-4">
+                <div
+                  class="w-12 h-12 bg-accent-teal rounded-full flex items-center justify-center flex-shrink-0"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-6 h-6 text-white-text"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-montserrat font-bold text-white-text mb-1">
+                    Email Us
+                  </h4>
+                  <p>contact@hopeforall.org</p>
+                </div>
+              </div>
+
+              <!-- Phone -->
+              <div class="flex items-start gap-4">
+                <div
+                  class="w-12 h-12 bg-accent-teal rounded-full flex items-center justify-center flex-shrink-0"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-6 h-6 text-white-text"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-montserrat font-bold text-white-text mb-1">
+                    Call Us
+                  </h4>
+                  <p>+1 (555) 123-HOPE</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="mt-20 pt-8 border-t border-light-text/20 text-center">
+            <!-- Social Media -->
+            <div class="flex justify-center gap-6 mb-8">
+              <!-- Facebook -->
+              <a
+                href="#"
+                class="w-12 h-12 bg-accent-teal rounded-full flex items-center justify-center hover:scale-110 transform transition-all duration-300"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-6 h-6 text-white-text"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+                  />
+                </svg>
+              </a>
+              <!-- Twitter -->
+              <a
+                href="#"
+                class="w-12 h-12 bg-accent-teal rounded-full flex items-center justify-center hover:scale-110 transform transition-all duration-300"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-6 h-6 text-white-text"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"
+                  />
+                </svg>
+              </a>
+              <!-- LinkedIn -->
+              <a
+                href="#"
+                class="w-12 h-12 bg-accent-teal rounded-full flex items-center justify-center hover:scale-110 transform transition-all duration-300"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-6 h-6 text-white-text"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+                  />
+                </svg>
+              </a>
+              <!-- Instagram -->
+              <a
+                href="#"
+                class="w-12 h-12 bg-accent-teal rounded-full flex items-center justify-center hover:scale-110 transform transition-all duration-300"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-6 h-6 text-white-text"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
+                  />
+                </svg>
+              </a>
+            </div>
+            <!-- Copyright -->
+            <p class="text-light-text text-sm">
+              © 2025 Hope for All Foundation. All Rights Reserved. | Building
+              brighter futures worldwide.
+            </p>
+          </div>
+        </div>
+      </section>
+      <!-- CONTACT & FOOTER SECTION END -->
+    </main>
+
+    <script>
+      // ===============================
+      // Hope for All Foundation Website
+      // Enhanced JavaScript Interactivity with Particle Background
+      // ===============================
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // --- Particle Background Animation ---
+        class ParticleSystem {
+          constructor(canvas) {
+            this.canvas = canvas;
+            this.ctx = canvas.getContext("2d");
+            this.particles = [];
+            this.particleCount = window.innerWidth < 768 ? 50 : 100; // Fewer particles on mobile
+
+            this.resizeCanvas();
+            this.createParticles();
+            this.animate();
+
+            window.addEventListener("resize", () => {
+              this.particleCount = window.innerWidth < 768 ? 50 : 100;
+              this.resizeCanvas();
+              this.createParticles();
+            });
+          }
+
+          resizeCanvas() {
+            this.canvas.width = this.canvas.offsetWidth;
+            this.canvas.height = this.canvas.offsetHeight;
+          }
+
+          createParticles() {
+            this.particles = [];
+            for (let i = 0; i < this.particleCount; i++) {
+              this.particles.push({
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height,
+                size: Math.random() * 3 + 1,
+                speedX: (Math.random() - 0.5) * 0.5,
+                speedY: (Math.random() - 0.5) * 0.5,
+                opacity: Math.random() * 0.5 + 0.1,
+              });
+            }
+          }
+
+          animate() {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+            this.particles.forEach((particle) => {
+              particle.x += particle.speedX;
+              particle.y += particle.speedY;
+
+              if (particle.x > this.canvas.width) particle.x = 0;
+              if (particle.x < 0) particle.x = this.canvas.width;
+              if (particle.y > this.canvas.height) particle.y = 0;
+              if (particle.y < 0) particle.y = this.canvas.height;
+
+              this.ctx.beginPath();
+              this.ctx.arc(
+                particle.x,
+                particle.y,
+                particle.size,
+                0,
+                Math.PI * 2
+              );
+              this.ctx.fillStyle = `rgba(20, 184, 166, ${particle.opacity})`;
+              this.ctx.fill();
+            });
+
+            this.particles.forEach((particle, i) => {
+              this.particles.slice(i + 1).forEach((otherParticle) => {
+                const dx = particle.x - otherParticle.x;
+                const dy = particle.y - otherParticle.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 100) {
+                  this.ctx.beginPath();
+                  this.ctx.moveTo(particle.x, particle.y);
+                  this.ctx.lineTo(otherParticle.x, otherParticle.y);
+                  this.ctx.strokeStyle = `rgba(20, 184, 166, ${
+                    0.1 * (1 - distance / 100)
+                  })`;
+                  this.ctx.lineWidth = 1;
+                  this.ctx.stroke();
+                }
+              });
+            });
+
+            requestAnimationFrame(() => this.animate());
+          }
+        }
+
+        const particlesCanvas = document.getElementById("particles-canvas");
+        if (particlesCanvas) {
+          // Initialize particle system on the hero section canvas
+          const heroSection = document.getElementById("home");
+          particlesCanvas.width = heroSection.offsetWidth;
+          particlesCanvas.height = heroSection.offsetHeight;
+          new ParticleSystem(particlesCanvas);
+        }
+
+        // --- Mobile Menu Toggle ---
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
+        if (mobileMenuButton && mobileMenu) {
+          mobileMenuButton.addEventListener("click", () => {
+            mobileMenu.classList.toggle("hidden");
+          });
+        }
+
+        // --- Sticky Navigation on Scroll ---
+        const mainHeader = document.getElementById("main-header");
+        if (mainHeader) {
+          window.addEventListener("scroll", () => {
+            if (window.scrollY > 50) {
+              mainHeader.classList.add(
+                "bg-primary-blue/95",
+                "backdrop-blur-sm",
+                "shadow-lg"
+              );
+            } else {
+              mainHeader.classList.remove(
+                "bg-primary-blue/95",
+                "backdrop-blur-sm",
+                "shadow-lg"
+              );
+            }
+          });
+        }
+
+        // --- Smooth Scrolling for Anchor Links ---
+        const navLinks = document.querySelectorAll('a[href^="#"]');
+        navLinks.forEach((link) => {
+          link.addEventListener("click", (e) => {
+            const href = link.getAttribute("href");
+            // Ensure it's an on-page link before preventing default
+            if (href.startsWith("#")) {
+              e.preventDefault();
+              const targetId = href.substring(1);
+              const targetSection = document.getElementById(targetId);
+
+              if (targetSection) {
+                targetSection.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                });
+              }
+
+              if (mobileMenu && !mobileMenu.classList.contains("hidden")) {
+                mobileMenu.classList.add("hidden");
+              }
+            }
+          });
+        });
+
+        // --- Enhanced Section Fade-In on Scroll ---
+        const fadeInSections = document.querySelectorAll(".fade-in-section");
+        const observerOptions = {
+          root: null,
+          threshold: 0.1,
+        };
+        const fadeInObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              // FIX: Changed class from "fade-in" to "is-visible" to match the CSS.
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        }, observerOptions);
+        fadeInSections.forEach((section) => {
+          fadeInObserver.observe(section);
+        });
+
+        // --- Counter Animation ---
+        const counters = document.querySelectorAll(".counter");
+        const speed = 200; // The lower the number, the faster the count
+
+        const animateCounter = (counter) => {
+          const target = +counter.getAttribute("data-target");
+          let count = 0;
+
+          const updateCount = () => {
+            const increment = target / speed;
+            if (count < target) {
+              count += increment;
+              counter.innerText = Math.ceil(count).toLocaleString();
+              setTimeout(updateCount, 1);
+            } else {
+              counter.innerText = target.toLocaleString();
+            }
+          };
+          updateCount();
+        };
+
+        const counterObserver = new IntersectionObserver(
+          (entries, observer) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                animateCounter(entry.target);
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.5 }
+        );
+
+        counters.forEach((counter) => {
+          counterObserver.observe(counter);
+        });
+      });
+    </script>
+  </body>
+</html>
