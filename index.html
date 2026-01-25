@@ -545,6 +545,7 @@
                 src="images/deski-jayantoro-Lolef9QKdtU-unsplash.jpg"
                 alt="Children in newly built classroom with digital learning tablets"
                 class="w-full h-80 object-cover"
+                loading="lazy"
               />
               <div class="gallery-overlay">
                 <svg
@@ -576,6 +577,7 @@
                 src="images/haseeb-modi-OcDJhBm8Jnc-unsplash.jpg"
                 alt="Community health worker providing medical care"
                 class="w-full h-80 object-cover"
+                loading="lazy"
               />
               <div class="gallery-overlay">
                 <svg
@@ -607,6 +609,7 @@
                 src="images/herlambang-tinasih-gusti-jsF0znM5uHk-unsplash.jpg"
                 alt="Solar panel installation bringing clean energy to rural village"
                 class="w-full h-80 object-cover"
+                loading="lazy"
               />
               <div class="gallery-overlay">
                 <svg
@@ -638,6 +641,7 @@
                 src="images/jerry-wang-KV9F7Ypl2N0-unsplash.jpg"
                 alt="Women entrepreneurs in microfinance program"
                 class="w-full h-80 object-cover"
+                loading="lazy"
               />
               <div class="gallery-overlay">
                 <svg
@@ -669,6 +673,7 @@
                 src="images/markus-spiske-lYGnhDJIe9M-unsplash.jpg"
                 alt="Clean water well celebration with community members"
                 class="w-full h-80 object-cover"
+                loading="lazy"
               />
               <div class="gallery-overlay">
                 <svg
@@ -700,6 +705,7 @@
                 src="images/max-smith-0HCCpeWzxnI-unsplash.jpg"
                 alt="Agricultural training program teaching sustainable farming"
                 class="w-full h-80 object-cover"
+                loading="lazy"
               />
               <div class="gallery-overlay">
                 <svg
@@ -731,6 +737,7 @@
                 src="images/nayan-gavli-BeQDYGrOo_g-unsplash.jpg"
                 alt="Young girl studying with new educational materials"
                 class="w-full h-80 object-cover"
+                loading="lazy"
               />
               <div class="gallery-overlay">
                 <svg
@@ -1156,6 +1163,7 @@
                   src="images/gabrielle-henderson-HJckKnwCXxQ-unsplash.jpg"
                   alt="Annual Report"
                   class="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                  loading="lazy"
                 />
                 <div
                   class="absolute inset-0 bg-primary-blue/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -1216,6 +1224,7 @@
                   src="images/vedhas-pathak-fP03kznKAXA-unsplash.jpg"
                   alt="Success Stories"
                   class="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                  loading="lazy"
                 />
                 <div
                   class="absolute inset-0 bg-primary-blue/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -1276,6 +1285,7 @@
                   src="images/brett-jordan-LPZy4da9aRo-unsplash.jpg"
                   alt="Newsletter"
                   class="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-500"
+                  loading="lazy"
                 />
                 <div
                   class="absolute inset-0 bg-primary-blue/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -1656,13 +1666,17 @@
               this.ctx.fill();
             });
 
-            this.particles.forEach((particle, i) => {
-              this.particles.slice(i + 1).forEach((otherParticle) => {
+            for (let i = 0; i < this.particles.length; i++) {
+              const particle = this.particles[i];
+              for (let j = i + 1; j < this.particles.length; j++) {
+                const otherParticle = this.particles[j];
                 const dx = particle.x - otherParticle.x;
                 const dy = particle.y - otherParticle.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
+                const distSq = dx * dx + dy * dy;
 
-                if (distance < 100) {
+                if (distSq < 10000) {
+                  // 100^2
+                  const distance = Math.sqrt(distSq);
                   this.ctx.beginPath();
                   this.ctx.moveTo(particle.x, particle.y);
                   this.ctx.lineTo(otherParticle.x, otherParticle.y);
@@ -1672,8 +1686,8 @@
                   this.ctx.lineWidth = 1;
                   this.ctx.stroke();
                 }
-              });
-            });
+              }
+            }
 
             requestAnimationFrame(() => this.animate());
           }
