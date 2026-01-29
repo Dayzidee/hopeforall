@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
+import { collection, query, orderBy, limit, getDocs, where } from 'firebase/firestore';
 import { db, COLLECTIONS } from '../services/db';
 import { Sun, Play, Lock, Calendar, BookOpen, Share2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -27,29 +27,44 @@ export default function DailyBread() {
     useEffect(() => {
         const fetchDevotional = async () => {
             try {
-                // In a real app, we'd query by date == today. 
-                // For demo, we just get the most recent one.
+                const todayStr = new Date().toISOString().split('T')[0];
+
+                // 1. Try to find devotional match strictly for today
                 const q = query(
                     collection(db, COLLECTIONS.DEVOTIONALS),
-                    orderBy("date", "desc"),
+                    where("date", "==", todayStr),
                     limit(1)
                 );
                 const snapshot = await getDocs(q);
+
                 if (!snapshot.empty) {
                     const data = snapshot.docs[0].data();
                     setTodayDevo({ id: snapshot.docs[0].id, ...data } as Devotional);
                 } else {
-                    // Fallback dummy data if DB is empty
-                    setTodayDevo({
-                        id: 'demo',
-                        title: 'Walking in Divine Authority',
-                        date: new Date().toISOString().split('T')[0],
-                        scriptureReference: 'Luke 10:19',
-                        scriptureText: 'Behold, I give unto you power to tread on serpents and scorpions, and over all the power of the enemy: and nothing shall by any means hurt you.',
-                        content: "When we understand who we are in Christ, fear loses its grip. Many believers walk as if they are defeated, but the mandate of heaven is clear: you have been given authority.\n\nToday, challenge every fearful thought with the Word of God. You are not a victim of your circumstances; you are a victor through the blood of Jesus. Stand tall, speak life, and watch the atmosphere around you shift.",
-                        author: 'Bishop Marvin L. Sapp',
-                        audioUrl: '#' // Demo
-                    });
+                    // 2. Fallback to most recent one if no specific entry for today
+                    const recentQ = query(
+                        collection(db, COLLECTIONS.DEVOTIONALS),
+                        orderBy("date", "desc"),
+                        limit(1)
+                    );
+                    const recentSnap = await getDocs(recentQ);
+
+                    if (!recentSnap.empty) {
+                        const data = recentSnap.docs[0].data();
+                        setTodayDevo({ id: recentSnap.docs[0].id, ...data } as Devotional);
+                    } else {
+                        // 3. Last Resort: Demo fallback if DB is completely empty
+                        setTodayDevo({
+                            id: 'demo',
+                            title: 'Walking in Divine Authority',
+                            date: todayStr,
+                            scriptureReference: 'Luke 10:19',
+                            scriptureText: 'Behold, I give unto you power to tread on serpents and scorpions, and over all the power of the enemy: and nothing shall by any means hurt you.',
+                            content: "When we understand who we are in Christ, fear loses its grip. Many believers walk as if they are defeated, but the mandate of heaven is clear: you have been given authority.\n\nToday, challenge every fearful thought with the Word of God. You are not a victim of your circumstances; you are a victor through the blood of Jesus. Stand tall, speak life, and watch the atmosphere around you shift.",
+                            author: 'Bishop Marvin L. Sapp',
+                            audioUrl: '#'
+                        });
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching devotional:", error);
@@ -65,11 +80,10 @@ export default function DailyBread() {
 
     if (!todayDevo) return <div className="p-10 text-center">No devotional for today.</div>;
 
-
-
     return (
         <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
             <PremiumUpsellBanner featureName="Devotional" />
+
             {/* Header */}
             <div className="text-center space-y-2">
                 <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wider mb-2">
@@ -126,7 +140,7 @@ export default function DailyBread() {
 
                     {/* Devotional Text */}
                     <div className="prose prose-lg text-neutral-600 leading-loose max-w-none font-sans">
-                        {todayDevo.content.split('\n\n').map((para, i) => (
+                        {todayDevo.content.split('\\n\\n').map((para, i) => (
                             <p key={i} className="mb-4">{para}</p>
                         ))}
                     </div>

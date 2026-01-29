@@ -1,25 +1,59 @@
 import { useState, useEffect } from 'react';
-import { db } from '../services/db';
-import { doc, onSnapshot } from 'firebase/firestore';
-import { Video, Clock } from 'lucide-react';
+import { db, COLLECTIONS } from '../services/db';
+import { doc, onSnapshot, collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore';
+import { Video, Clock, PlayCircle } from 'lucide-react';
 
 export default function LiveStream() {
   const [activeTab, setActiveTab] = useState<'live' | 'archive'>('live');
   const [liveConfig, setLiveConfig] = useState<{ videoId: string; isLive: boolean } | null>(null);
+  const [featuredSeries, setFeaturedSeries] = useState<any[]>([]);
+  const [selectedArchiveId, setSelectedArchiveId] = useState<string | null>(null);
 
   useEffect(() => {
     // Listen to live stream config
-    // We'll assume a doc 'config/livestream' exists
     const unsub = onSnapshot(doc(db, "config", "livestream"), (doc) => {
       if (doc.exists()) {
-        setLiveConfig(doc.data() as any);
+        const data = doc.data() as any;
+        setLiveConfig(data);
+        if (data.isLive) {
+          setActiveTab('live');
+        }
       }
     });
+
+    // Fetch Featured Series (Recent Sermons)
+    const fetchFeatured = async () => {
+      try {
+        const q = query(
+          collection(db, COLLECTIONS.CONTENT),
+          where('type', '==', 'sermon'),
+          orderBy('createdAt', 'desc'),
+          limit(5)
+        );
+        const snapshot = await getDocs(q);
+        const series = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setFeaturedSeries(series);
+        if (series.length > 0) {
+          setSelectedArchiveId(series[0].videoId);
+        }
+      } catch (error) {
+        console.error("Error fetching featured series:", error);
+      }
+    };
+
+    fetchFeatured();
+
     return () => unsub();
   }, []);
 
-  const liveVideoId = liveConfig?.videoId || 'live_stream?channel=UCwRxGy0RvPbd9PLJlVQYhtg'; // Fallback to channel live
-  const archiveListId = 'UUwRxGy0RvPbd9PLJlVQYhtg'; // Keeping hardcoded channel upload playlist for now or can be config
+  const liveVideoId = liveConfig?.videoId || 'live_stream?channel=UCwRxGy0RvPbd9PLJlVQYhtg';
+  const archiveListId = 'UUwRxGy0RvPbd9PLJlVQYhtg'; // Fallback playlist
+
+  const handleSeriesClick = (videoId: string) => {
+    setSelectedArchiveId(videoId);
+    setActiveTab('archive');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <div className="space-y-6">
@@ -64,9 +98,9 @@ export default function LiveStream() {
                 ></iframe>
               </>
             ) : (
-              /* Playlist Player */
+              /* Playlist Player or Selected Video */
               <iframe
-                src={`https://www.youtube.com/embed/videoseries?list=${archiveListId}`}
+                src={`https://www.youtube.com/embed/${selectedArchiveId ? selectedArchiveId : `videoseries?list=${archiveListId}`}`}
                 title="Recent Sermons"
                 className="absolute top-0 left-0 w-full h-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -112,45 +146,39 @@ export default function LiveStream() {
           <div className="bg-white p-6 rounded-xl shadow-sm border border-neutral-100">
             <h3 className="font-bold font-montserrat text-lg mb-4 text-primary-blue">Featured Series</h3>
             <div className="space-y-4">
-              <div className="group flex gap-3 cursor-pointer hover:bg-neutral-50 p-2 rounded-lg transition-colors">
-                <div className="w-24 h-16 bg-neutral-200 rounded-md overflow-hidden relative flex-shrink-0">
-                  <img
-                    src="https://source.unsplash.com/random/400x300?worship"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    alt="Series"
-                  />
+              {featuredSeries.length > 0 ? (
+                featuredSeries.map((series) => (
+                  <div
+                    key={series.id}
+                    onClick={() => handleSeriesClick(series.videoId)}
+                    className={`group flex gap-3 cursor-pointer p-2 rounded-lg transition-colors ${selectedArchiveId === series.videoId && activeTab === 'archive' ? 'bg-primary/5 ring-1 ring-primary/20' : 'hover:bg-neutral-50'}`}
+                  >
+                    <div className="w-24 h-16 bg-neutral-800 rounded-md overflow-hidden relative flex-shrink-0 flex items-center justify-center">
+                      {/* Use YouTube Thumbnail if available or placeholder */}
+                      <img
+                        src={`https://img.youtube.com/vi/${series.videoId}/mqdefault.jpg`}
+                        onError={(e) => { (e.target as HTMLImageElement).src = 'https://source.unsplash.com/random/400x300?worship' }}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-80 group-hover:opacity-100"
+                        alt={series.title}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-transparent transition-all">
+                        <PlayCircle className="text-white w-6 h-6 opacity-80 group-hover:scale-110 transition-transform" />
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className={`font-bold text-sm line-clamp-2 transition-colors ${selectedArchiveId === series.videoId && activeTab === 'archive' ? 'text-accent-teal' : 'text-neutral-800 group-hover:text-accent-teal'}`}>
+                        {series.title}
+                      </h4>
+                      <p className="text-xs text-neutral-500 mt-1">{series.author || 'The Chosen Vessel'}</p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-neutral-400 text-sm">
+                  <p>No featured series available yet.</p>
+                  <p className="text-xs mt-1">Check back soon for updates!</p>
                 </div>
-                <div>
-                  <h4 className="font-bold text-sm text-neutral-800 line-clamp-1 group-hover:text-accent-teal transition-colors">The Power of Faith</h4>
-                  <p className="text-xs text-neutral-500 mt-1">Pastor Marvin L. Sapp</p>
-                </div>
-              </div>
-              <div className="group flex gap-3 cursor-pointer hover:bg-neutral-50 p-2 rounded-lg transition-colors">
-                <div className="w-24 h-16 bg-neutral-200 rounded-md overflow-hidden relative flex-shrink-0">
-                  <img
-                    src="https://source.unsplash.com/random/400x300?bible"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    alt="Series"
-                  />
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm text-neutral-800 line-clamp-1 group-hover:text-accent-teal transition-colors">Kingdom Economics</h4>
-                  <p className="text-xs text-neutral-500 mt-1">Financial Stewardship</p>
-                </div>
-              </div>
-              <div className="group flex gap-3 cursor-pointer hover:bg-neutral-50 p-2 rounded-lg transition-colors">
-                <div className="w-24 h-16 bg-neutral-200 rounded-md overflow-hidden relative flex-shrink-0">
-                  <img
-                    src="https://source.unsplash.com/random/400x300?church"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    alt="Series"
-                  />
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm text-neutral-800 line-clamp-1 group-hover:text-accent-teal transition-colors">Family Foundations</h4>
-                  <p className="text-xs text-neutral-500 mt-1">Building Strong Homes</p>
-                </div>
-              </div>
+              )}
             </div>
           </div>
 

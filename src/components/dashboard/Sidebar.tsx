@@ -13,7 +13,6 @@ import {
     Gift,
     BarChart3,
     Calendar,
-    HelpCircle,
     Smile,
     LogOut
 } from 'lucide-react';
@@ -40,7 +39,6 @@ export default function Sidebar({ isOpen, setIsOpen }: { isOpen: boolean, setIsO
         { title: 'Spiritual Gifts', path: '/dashboard/gifts', icon: <Gift size={20} />, golden: true },
         { title: 'Offering Analytics', path: '/dashboard/giving', icon: <BarChart3 size={20} /> },
         { title: 'Events', path: '/dashboard/events', icon: <Calendar size={20} /> },
-        { title: 'Ask The Bishop', path: '/dashboard/qa', icon: <HelpCircle size={20} />, golden: true },
         { title: 'Kids Kingdom', path: '/dashboard/kids', icon: <Smile size={20} /> },
         { title: 'My Profile', path: '/dashboard/profile', icon: <User size={20} /> },
     ];

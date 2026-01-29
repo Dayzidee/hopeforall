@@ -156,6 +156,7 @@ export const AdminLayout = () => {
             <li><Link to="/admin/content" className="block p-2 hover:bg-gray-200 rounded">Content CMS</Link></li>
             <li><Link to="/admin/prayers" className="block p-2 hover:bg-gray-200 rounded">Prayer Requests</Link></li>
             <li><Link to="/admin/chat" className="block p-2 hover:bg-gray-200 rounded">Chat Messages</Link></li>
+            <li><Link to="/admin/interactions" className="block p-2 hover:bg-gray-200 rounded">Pastor Interaction</Link></li>
             <li><Link to="/admin/notifications" className="block p-2 hover:bg-gray-200 rounded">Global Notifications</Link></li>
           </ul>
         </aside>

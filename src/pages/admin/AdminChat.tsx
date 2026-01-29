@@ -68,7 +68,7 @@ export default function AdminChat() {
                         {/* Admin Actions */}
                         <button
                             onClick={() => handleDelete(msg.id)}
-                            className="opacity-0 group-hover:opacity-100 p-2 text-neutral-400 hover:text-red-500 transition-all self-center"
+                            className="p-2 text-neutral-400 hover:text-red-500 transition-all self-center"
                             title="Delete Message"
                         >
                             <Trash2 size={16} />

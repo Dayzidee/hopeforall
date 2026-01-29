@@ -11,7 +11,7 @@ interface Event {
     date: string; // YYYY-MM-DD
     time: string;
     location: string;
-    image?: string;
+    imageUrl?: string;
     category: string;
 }
 
@@ -87,15 +87,32 @@ export default function EventsCalendar() {
                     </div>
                 ) : (
                     filteredEvents.map((event) => (
-                        <div key={event.id} className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 hover:shadow-xl transition-all flex flex-col md:flex-row gap-6 md:gap-8 group">
+                        <div key={event.id} className="bg-white rounded-2xl p-4 shadow-sm border border-neutral-100 hover:shadow-xl transition-all flex flex-col md:flex-row gap-6 group overflow-hidden">
                             {/* Date Badge */}
-                            <div className="flex-shrink-0 flex md:flex-col items-center justify-center bg-neutral-50 rounded-2xl p-4 md:w-24 md:h-24 border border-neutral-100 text-center gap-2 md:gap-0">
-                                <span className="text-red-500 font-bold uppercase text-xs tracking-wider block mb-1">
-                                    {new Date(event.date).toLocaleString('default', { month: 'short' })}
-                                </span>
-                                <span className="text-3xl font-bold text-neutral-800 block leading-none">
-                                    {new Date(event.date).getDate()}
-                                </span>
+                            {/* Image or Date Badge */}
+                            <div className="flex-shrink-0 md:w-64 h-48 md:h-auto relative rounded-2xl overflow-hidden shadow-sm">
+                                {event.imageUrl ? (
+                                    <>
+                                        <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                        <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-md p-2 rounded-lg text-center min-w-[60px] shadow-sm">
+                                            <span className="text-red-500 font-bold uppercase text-[10px] tracking-wider block">
+                                                {new Date(event.date).toLocaleString('default', { month: 'short' })}
+                                            </span>
+                                            <span className="text-2xl font-bold text-neutral-800 block leading-none">
+                                                {new Date(event.date).getDate()}
+                                            </span>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className="w-full h-full bg-neutral-50 flex items-center justify-center flex-col gap-2 border border-neutral-100">
+                                        <span className="text-red-500 font-bold uppercase text-xs tracking-wider block">
+                                            {new Date(event.date).toLocaleString('default', { month: 'short' })}
+                                        </span>
+                                        <span className="text-3xl font-bold text-neutral-800 block leading-none">
+                                            {new Date(event.date).getDate()}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Content */}

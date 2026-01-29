@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { db, COLLECTIONS } from '../../services/db';
-import { collection, addDoc, serverTimestamp, setDoc, doc, deleteDoc, updateDoc, onSnapshot, query, orderBy, getDoc } from 'firebase/firestore';
-import { Plus, Video, Calendar, Sun, Smile, BookOpen, Trash2, Edit, Save, X } from 'lucide-react';
+import { db, COLLECTIONS, storage } from '../../services/db';
+import { collection, addDoc, serverTimestamp, setDoc, doc, deleteDoc, updateDoc, onSnapshot, query, orderBy, getDoc, where } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { Plus, Video, Calendar, Sun, Smile, BookOpen, Trash2, Edit, Save, X, UploadCloud, Users } from 'lucide-react';
 
-type ContentType = 'sermon' | 'event' | 'devotional' | 'kid' | 'resource' | 'stream';
+type ContentType = 'sermon' | 'event' | 'devotional' | 'kid' | 'resource' | 'stream' | 'group_announcement';
 
 export default function AdminContent() {
     const [activeTab, setActiveTab] = useState<ContentType>('sermon');
@@ -11,6 +12,8 @@ export default function AdminContent() {
     const [viewMode, setViewMode] = useState<'list' | 'create' | 'edit'>('list');
     const [contentList, setContentList] = useState<any[]>([]);
     const [editingId, setEditingId] = useState<string | null>(null);
+    const [file, setFile] = useState<File | null>(null);
+    const [uploading, setUploading] = useState(false);
 
     // Fetch Content
     useEffect(() => {
@@ -23,11 +26,20 @@ export default function AdminContent() {
             case 'devotional': col = COLLECTIONS.DEVOTIONALS; break;
             case 'kid': col = COLLECTIONS.KIDS_CONTENT; break;
             case 'resource': col = COLLECTIONS.RESOURCES; break;
+            case 'group_announcement': col = COLLECTIONS.CONTENT; break;
         }
 
         if (!col) return;
 
-        const q = query(collection(db, col), orderBy('createdAt', 'desc'));
+        let q;
+        if (activeTab === 'group_announcement') {
+            q = query(collection(db, col), where('type', '==', 'group_announcement'), orderBy('createdAt', 'desc'));
+        } else if (activeTab === 'sermon') {
+            q = query(collection(db, col), where('type', '==', 'sermon'), orderBy('createdAt', 'desc'));
+        } else {
+            q = query(collection(db, col), orderBy('createdAt', 'desc'));
+        }
+
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setContentList(list);
@@ -64,6 +76,30 @@ export default function AdminContent() {
                 return;
             }
 
+            let fileUrl = '';
+            if (file) {
+                setUploading(true);
+                try {
+                    const storageRef = ref(storage, `uploads/${activeTab}/${Date.now()}_${file.name}`);
+                    await uploadBytes(storageRef, file);
+                    fileUrl = await getDownloadURL(storageRef);
+                } catch (err) {
+                    console.error("Upload failed", err);
+                    alert("File upload failed");
+                    setUploading(false);
+                    return;
+                }
+                setUploading(false);
+            }
+
+            const dataToSave = { ...formData };
+            if (fileUrl) {
+                if (activeTab === 'resource' || activeTab === 'kid') dataToSave.url = fileUrl;
+                if (activeTab === 'sermon') dataToSave.videoUrl = fileUrl; // Override if file uploaded
+                if (activeTab === 'devotional') dataToSave.audioUrl = fileUrl;
+                if (activeTab === 'event') dataToSave.imageUrl = fileUrl;
+            }
+
             let col = '';
             switch (activeTab) {
                 case 'sermon': col = COLLECTIONS.CONTENT; break;
@@ -71,6 +107,7 @@ export default function AdminContent() {
                 case 'devotional': col = COLLECTIONS.DEVOTIONALS; break;
                 case 'kid': col = COLLECTIONS.KIDS_CONTENT; break;
                 case 'resource': col = COLLECTIONS.RESOURCES; break;
+                case 'group_announcement': col = COLLECTIONS.CONTENT; break;
             }
 
             if (!col) return;
@@ -78,7 +115,7 @@ export default function AdminContent() {
             if (viewMode === 'edit' && editingId) {
                 // Update
                 await updateDoc(doc(db, col, editingId), {
-                    ...formData,
+                    ...dataToSave,
                     updatedAt: serverTimestamp()
                 });
                 alert("Updated successfully!");
@@ -86,7 +123,7 @@ export default function AdminContent() {
             } else {
                 // Create
                 await addDoc(collection(db, col), {
-                    ...formData,
+                    ...dataToSave,
                     type: activeTab,
                     createdAt: serverTimestamp()
                 });
@@ -95,6 +132,7 @@ export default function AdminContent() {
             }
 
             setFormData({});
+            setFile(null);
             setEditingId(null);
 
         } catch (error) {
@@ -113,6 +151,7 @@ export default function AdminContent() {
             case 'devotional': col = COLLECTIONS.DEVOTIONALS; break;
             case 'kid': col = COLLECTIONS.KIDS_CONTENT; break;
             case 'resource': col = COLLECTIONS.RESOURCES; break;
+            case 'group_announcement': col = COLLECTIONS.CONTENT; break;
         }
         if (!col) return;
 
@@ -250,6 +289,20 @@ export default function AdminContent() {
                         </div>
                     </div>
                 )}
+
+                {activeTab === 'group_announcement' && (
+                    <div>
+                        <label className="block text-sm font-bold mb-1">Target Group</label>
+                        <select className="w-full p-3 border rounded-lg" value={formData.groupId || ''} onChange={e => handleInput('groupId', e.target.value)} required>
+                            <option value="">Select Group...</option>
+                            <option value="1">Men of Valor</option>
+                            <option value="2">Women of Destiny</option>
+                            <option value="3">Young Adults (The Bridge)</option>
+                            <option value="4">Kingdom Marriage</option>
+                            <option value="all">All Groups</option>
+                        </select>
+                    </div>
+                )}
                 {activeTab === 'stream' && (
                     <div className="space-y-4">
                         <div className="bg-blue-50 p-4 rounded-lg text-blue-800 text-sm mb-4">
@@ -280,9 +333,31 @@ export default function AdminContent() {
                     </div>
                 )}
 
-                <button type="submit" className="w-full py-4 bg-primary text-white font-bold rounded-xl shadow-lg hover:bg-primary-blue transition-all flex items-center justify-center gap-2 mt-4">
-                    {viewMode === 'create' ? <Plus size={20} /> : <Save size={20} />}
-                    {viewMode === 'create' ? 'Publish Content' : 'Update Content'}
+                {(activeTab === 'resource' || activeTab === 'sermon' || activeTab === 'devotional' || activeTab === 'kid' || activeTab === 'event') && (
+                    <div className="bg-neutral-50 p-4 rounded-lg border border-neutral-200 mt-4">
+                        <label className="block text-sm font-bold mb-2 flex items-center gap-2">
+                            <UploadCloud size={18} /> Upload Media
+                        </label>
+                        <input
+                            type="file"
+                            onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
+                            className="w-full text-sm text-neutral-500
+                              file:mr-4 file:py-2 file:px-4
+                              file:rounded-full file:border-0
+                              file:text-sm file:font-semibold
+                              file:bg-violet-50 file:text-violet-700
+                              hover:file:bg-violet-100"
+                        />
+                        <p className="text-xs text-neutral-500 mt-1">
+                            Uploading a file will automatically fill the URL field. Supported: Video, Audio, PDF, Images.
+                            {activeTab === 'sermon' && ' (Overrides Video URL)'}
+                        </p>
+                    </div>
+                )}
+
+                <button disabled={uploading} type="submit" className="w-full py-4 bg-primary text-white font-bold rounded-xl shadow-lg hover:bg-primary-blue transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-50">
+                    {uploading ? 'Uploading...' : (viewMode === 'create' ? <Plus size={20} /> : <Save size={20} />)}
+                    {uploading ? 'Please Wait' : (viewMode === 'create' ? 'Publish Content' : 'Update Content')}
                 </button>
             </div>
         );
@@ -336,6 +411,7 @@ export default function AdminContent() {
                     { id: 'devotional', label: 'Daily Bread', icon: <Sun size={18} /> },
                     { id: 'kid', label: 'Kids Kingdom', icon: <Smile size={18} /> },
                     { id: 'resource', label: 'Library', icon: <BookOpen size={18} /> },
+                    { id: 'group_announcement', label: 'Group Update', icon: <Users size={18} /> },
                     { id: 'stream', label: 'Live Stream', icon: <Video size={18} /> },
                 ].map(tab => (
                     <button

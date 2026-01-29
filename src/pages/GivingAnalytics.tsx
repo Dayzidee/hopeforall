@@ -33,14 +33,7 @@ export default function GivingAnalytics() {
                 const fetched = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Donation[];
                 setDonations(fetched);
             } else {
-                // Mock Data for Demo Visualization
-                setDonations([
-                    { id: '1', amount: 150.00, type: 'Tithe', date: { seconds: Date.now() / 1000 - 86400 * 2 }, status: 'completed' },
-                    { id: '2', amount: 50.00, type: 'Offering', date: { seconds: Date.now() / 1000 - 86400 * 9 }, status: 'completed' },
-                    { id: '3', amount: 150.00, type: 'Tithe', date: { seconds: Date.now() / 1000 - 86400 * 16 }, status: 'completed' },
-                    { id: '4', amount: 200.00, type: 'Building Fund', date: { seconds: Date.now() / 1000 - 86400 * 23 }, status: 'completed' },
-                    { id: '5', amount: 150.00, type: 'Tithe', date: { seconds: Date.now() / 1000 - 86400 * 30 }, status: 'completed' },
-                ]);
+                setDonations([]);
             }
             setLoading(false);
         });
@@ -48,9 +41,18 @@ export default function GivingAnalytics() {
         return () => unsubscribe();
     }, [user]);
 
+
     // Analytics Calculations
     const totalGiven = donations.reduce((acc, curr) => acc + curr.amount, 0);
     const averageGiving = donations.length > 0 ? totalGiven / donations.length : 0;
+
+    // Group by Month
+    const byMonth = donations.reduce((acc, curr) => {
+        const date = new Date(curr.date.seconds * 1000);
+        const month = date.toLocaleString('default', { month: 'short' });
+        acc[month] = (acc[month] || 0) + curr.amount;
+        return acc;
+    }, {} as Record<string, number>);
 
     // Group by Type for Pie Chart approximation
     const byType = donations.reduce((acc, curr) => {
@@ -59,6 +61,13 @@ export default function GivingAnalytics() {
     }, {} as Record<string, number>);
 
 
+    const currentMonthIndex = new Date().getMonth();
+    // Show last 6 months
+    const last6Months = Array.from({ length: 6 }, (_, i) => {
+        const d = new Date();
+        d.setMonth(currentMonthIndex - 5 + i);
+        return d.toLocaleString('default', { month: 'short' });
+    });
 
     return (
         <div className="space-y-8 animate-fade-in max-w-6xl mx-auto">
@@ -118,6 +127,40 @@ export default function GivingAnalytics() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Visuals */}
                 <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-neutral-100 p-8">
+                    <h3 className="font-bold text-lg text-neutral-800 mb-6">Giving Trends</h3>
+                    <div className="bg-neutral-50 rounded-xl p-6 h-64 flex items-end justify-between gap-2 mb-8 border border-neutral-100 relative">
+                        {/* Y-axis lines (decorative) */}
+                        <div className="absolute inset-0 flex flex-col justify-between p-6 opacity-10 pointer-events-none">
+                            <div className="w-full h-px bg-neutral-900" />
+                            <div className="w-full h-px bg-neutral-900" />
+                            <div className="w-full h-px bg-neutral-900" />
+                            <div className="w-full h-px bg-neutral-900" />
+                        </div>
+
+                        {last6Months.map(month => {
+                            const amount = byMonth[month] || 0;
+                            const max = Math.max(...Object.values(byMonth), 1); // Avoid div by 0
+                            const height = (amount / max) * 100;
+
+                            return (
+                                <div key={month} className="flex flex-col items-center gap-2 w-full group relative z-10">
+                                    <div className="relative w-full flex items-end justify-center h-40">
+                                        <div
+                                            className="w-full max-w-[40px] bg-primary rounded-t-lg transition-all duration-1000 ease-out group-hover:bg-primary-blue relative"
+                                            style={{ height: `${height}%`, minHeight: '4px' }}
+                                        >
+                                            {/* Tooltip */}
+                                            <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                                                ${amount.toFixed(0)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span className="text-xs font-bold text-neutral-400">{month}</span>
+                                </div>
+                            )
+                        })}
+                    </div>
+
                     <h3 className="font-bold text-lg text-neutral-800 mb-6">Distribution</h3>
                     {/* CSS Bar Chart */}
                     <div className="space-y-6">

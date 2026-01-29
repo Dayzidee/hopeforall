@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 
 export default function Hero() {
@@ -61,12 +62,12 @@ export default function Hero() {
         </p>
 
         <div ref={btnRef} className="flex flex-col sm:flex-row gap-4 sm:gap-5 justify-center items-center w-full sm:w-auto px-4 sm:px-0">
-          <button className="w-full sm:w-auto px-8 py-3.5 sm:py-4 bg-accent-teal hover:bg-teal-500 text-white font-bold rounded-lg shadow-[0_0_20px_rgba(20,184,166,0.5)] hover:shadow-[0_0_30px_rgba(20,184,166,0.6)] transition-all duration-300 transform hover:-translate-y-1">
+          <Link to="/dashboard/live" className="w-full sm:w-auto px-8 py-3.5 sm:py-4 bg-accent-teal hover:bg-teal-500 text-white font-bold rounded-lg shadow-[0_0_20px_rgba(20,184,166,0.5)] hover:shadow-[0_0_30px_rgba(20,184,166,0.6)] transition-all duration-300 transform hover:-translate-y-1 block text-center">
             Join Service Live
-          </button>
-          <button className="w-full sm:w-auto px-8 py-3.5 sm:py-4 glass-panel border-white/30 text-white font-bold rounded-lg hover:bg-white/10 transition-all duration-300">
+          </Link>
+          <a href="#ministries" className="w-full sm:w-auto px-8 py-3.5 sm:py-4 glass-panel border-white/30 text-white font-bold rounded-lg hover:bg-white/10 transition-all duration-300 block text-center">
             Our Ministries
-          </button>
+          </a>
         </div>
       </div>
 

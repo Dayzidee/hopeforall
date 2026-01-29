@@ -9,8 +9,8 @@ import {
     Timestamp,
     serverTimestamp
 } from "firebase/firestore";
-import { db } from "../lib/firebase";
-export { db };
+import { db, storage } from "../lib/firebase";
+export { db, storage };
 
 // Collection references
 export const COLLECTIONS = {
@@ -28,7 +28,8 @@ export const COLLECTIONS = {
     KIDS_CONTENT: "kids_content",
     NOTIFICATIONS: "notifications",
     MESSAGES: "community_messages",
-    PRAYERS: "prayers"
+    PRAYERS: "prayers",
+    PASTOR_INTERACTIONS: "pastor_interactions"
 };
 
 // User Types
