@@ -3,10 +3,25 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   body {
-    @apply font-lato text-dark-text bg-light-background;
+    @apply font-lato text-neutral-800 bg-neutral-50 antialiased;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-montserrat;
+    @apply font-montserrat font-bold tracking-tight;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-xl;
+  }
+  .glass-button {
+    @apply bg-accent-teal/90 hover:bg-accent-teal text-white backdrop-blur-sm transition-all duration-300;
+  }
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-dark to-primary-light;
   }
 }

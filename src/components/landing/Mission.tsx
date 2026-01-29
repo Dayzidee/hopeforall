@@ -1,76 +1,61 @@
 import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Users, Heart, Music } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Mission() {
   const sectionRef = useRef(null);
 
+  // Use useLayoutEffect for better GSAP initialization with React
+  // Removed ScrollTrigger for now to ensure visibility as the negative margin might be affecting start/end points
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(".mission-card", {
-        scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 80%",
-        },
-        y: 50,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.2,
-        ease: "power2.out"
-      });
+      gsap.fromTo(".mission-card",
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: "power2.out", delay: 0.2 }
+      );
     }, sectionRef);
     return () => ctx.revert();
   }, []);
 
+  const missions = [
+    {
+      title: "Worship",
+      description: "Experience powerful, spirit-filled worship that connects you directly with the divine presence.",
+      icon: <Music className="w-8 h-8" />,
+      color: "bg-accent-teal"
+    },
+    {
+      title: "Community",
+      description: "The Chosen Vessel is more than a church; it's a family where everyone is welcome, supported, and loved.",
+      icon: <Users className="w-8 h-8" />,
+      color: "bg-accent-gold"
+    },
+    {
+      title: "Outreach",
+      description: "Extending our hands beyond the walls to serve, heal, and bring hope to our city.",
+      icon: <Heart className="w-8 h-8" />,
+      color: "bg-primary-light"
+    }
+  ];
+
   return (
-    <section id="mission" ref={sectionRef} className="py-20 sm:py-28 bg-white-text">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl font-montserrat font-bold text-primary-blue">
-              Our Pillars of Faith
-            </h2>
-            <p className="mt-6 text-xl text-dark-text max-w-3xl mx-auto leading-relaxed">
-              Foundational principles that guide our community and spiritual growth.
-            </p>
+    <div id="mission" ref={sectionRef} className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {missions.map((item, idx) => (
+        <div key={idx} className="mission-card group relative overflow-hidden bg-white p-8 rounded-2xl shadow-lg border border-neutral-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+          <div className={`w-14 h-14 ${item.color} rounded-xl flex items-center justify-center mb-6 text-white shadow-md group-hover:scale-110 transition-transform duration-300`}>
+            {item.icon}
           </div>
+          <h3 className="text-2xl font-montserrat font-bold text-primary mb-4">{item.title}</h3>
+          <p className="text-neutral-600 leading-relaxed">
+            {item.description}
+          </p>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mt-16">
-            {/* Worship */}
-            <div className="mission-card bg-light-background rounded-2xl p-8 border-2 border-primary-blue/10 hover:shadow-2xl hover:border-accent-teal/50 transition-all duration-300">
-              <div className="w-16 h-16 bg-accent-teal rounded-full flex items-center justify-center mb-6 text-white-text font-bold text-2xl">
-                 W
-              </div>
-              <h3 className="text-2xl font-montserrat font-bold text-primary-blue mb-4">Worship</h3>
-              <p className="text-dark-text leading-relaxed">
-                Experience powerful worship sessions that connect you directly with the divine. Our services are designed to uplift your spirit and strengthen your faith.
-              </p>
-            </div>
-
-            {/* Community */}
-            <div className="mission-card bg-light-background rounded-2xl p-8 border-2 border-primary-blue/10 hover:shadow-2xl hover:border-accent-teal/50 transition-all duration-300">
-              <div className="w-16 h-16 bg-accent-teal rounded-full flex items-center justify-center mb-6 text-white-text font-bold text-2xl">
-                 C
-              </div>
-              <h3 className="text-2xl font-montserrat font-bold text-primary-blue mb-4">Community</h3>
-              <p className="text-dark-text leading-relaxed">
-                We believe in the power of togetherness. Vessel is more than a church; it's a family where everyone is welcome, supported, and loved.
-              </p>
-            </div>
-
-            {/* Outreach */}
-            <div className="mission-card bg-light-background rounded-2xl p-8 border-2 border-primary-blue/10 hover:shadow-2xl hover:border-accent-teal/50 transition-all duration-300">
-              <div className="w-16 h-16 bg-accent-teal rounded-full flex items-center justify-center mb-6 text-white-text font-bold text-2xl">
-                 O
-              </div>
-              <h3 className="text-2xl font-montserrat font-bold text-primary-blue mb-4">Outreach</h3>
-              <p className="text-dark-text leading-relaxed">
-                Extending our hands beyond the walls of the church to serve the needy, heal the broken, and bring hope to the hopeless in our society.
-              </p>
-            </div>
-          </div>
+          <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-accent-teal to-accent-gold transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
         </div>
-    </section>
+      ))}
+    </div>
   );
 }

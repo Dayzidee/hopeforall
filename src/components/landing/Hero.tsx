@@ -2,140 +2,80 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 
 export default function Hero() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const textRef = useRef<HTMLParagraphElement>(null);
   const btnRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // GSAP Animations
-    const tl = gsap.timeline();
-    tl.fromTo(titleRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" })
-      .fromTo(textRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, "-=0.4")
-      .fromTo(btnRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, "-=0.4");
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline();
 
-    // Particle System
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+      tl.fromTo(titleRef.current,
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: "power3.out" }
+      )
+        .fromTo(textRef.current,
+          { y: 30, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1, ease: "power3.out" },
+          "-=0.6"
+        )
+        .fromTo(btnRef.current,
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
+          "-=0.6"
+        );
+    }, containerRef);
 
-    let particles: any[] = [];
-    let animationFrameId: number;
-
-    const resizeCanvas = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-    };
-
-    const createParticles = () => {
-      const particleCount = window.innerWidth < 768 ? 50 : 100;
-      particles = [];
-      for (let i = 0; i < particleCount; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          size: Math.random() * 3 + 1,
-          speedX: (Math.random() - 0.5) * 0.5,
-          speedY: (Math.random() - 0.5) * 0.5,
-          opacity: Math.random() * 0.5 + 0.1,
-        });
-      }
-    };
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      particles.forEach((particle) => {
-        particle.x += particle.speedX;
-        particle.y += particle.speedY;
-
-        if (particle.x > canvas.width) particle.x = 0;
-        if (particle.x < 0) particle.x = canvas.width;
-        if (particle.y > canvas.height) particle.y = 0;
-        if (particle.y < 0) particle.y = canvas.height;
-
-        ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(20, 184, 166, ${particle.opacity})`;
-        ctx.fill();
-      });
-
-      // Draw connections
-      particles.forEach((particle, i) => {
-        for (let j = i + 1; j < particles.length; j++) {
-          const other = particles[j];
-          const dx = particle.x - other.x;
-          const dy = particle.y - other.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < 100) {
-            ctx.beginPath();
-            ctx.moveTo(particle.x, particle.y);
-            ctx.lineTo(other.x, other.y);
-            ctx.strokeStyle = `rgba(20, 184, 166, ${0.1 * (1 - dist / 100)})`;
-            ctx.lineWidth = 1;
-            ctx.stroke();
-          }
-        }
-      });
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    resizeCanvas();
-    createParticles();
-    animate();
-
-    window.addEventListener("resize", () => {
-      resizeCanvas();
-      createParticles();
-    });
-
-    return () => {
-      window.removeEventListener("resize", resizeCanvas);
-      cancelAnimationFrame(animationFrameId);
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center bg-primary-blue overflow-hidden">
-      <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full pointer-events-none" />
-
-      {/* Background Image Overlay */}
+    <div ref={containerRef} className="relative min-h-screen md:min-h-[90vh] flex items-center justify-center overflow-hidden bg-primary py-20 md:py-0">
+      {/* Background with Gradient Overlay */}
       <div className="absolute inset-0 z-0">
-          <img
-            src="https://placehold.co/1920x1080/1F2937/FFFFFF?text=Vessel+Church"
-            alt="Church Background"
-            className="w-full h-full object-cover opacity-20"
-          />
-          <div className="absolute inset-0 bg-primary-blue/70"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-primary-dark/90 via-primary/80 to-primary-light/90 z-10" />
+        <img
+          src="https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=2673&auto=format&fit=crop"
+          alt="Worship Background"
+          className="w-full h-full object-cover opacity-40 scale-105 animate-pulse-slow object-center"
+        />
       </div>
 
-      <div className="relative z-10 container mx-auto px-6 text-center text-white-text">
-        <h1 ref={titleRef} className="font-montserrat font-bold text-5xl md:text-7xl leading-tight">
-          Welcome to <span className="text-accent-teal">Vessel</span>
+      {/* Decorative Glows */}
+      <div className="absolute top-1/4 left-1/4 w-64 h-64 md:w-96 md:h-96 bg-accent-teal/20 rounded-full blur-[80px] md:blur-[100px] animate-pulse" />
+      <div className="absolute bottom-1/4 right-1/4 w-64 h-64 md:w-96 md:h-96 bg-accent-gold/20 rounded-full blur-[80px] md:blur-[100px] animate-pulse delay-1000" />
+
+      {/* Content */}
+      <div className="relative z-20 text-center px-4 sm:px-6 max-w-5xl mx-auto mt-10 md:mt-0">
+        <div className="inline-block px-4 py-1.5 mb-6 rounded-full border border-white/20 bg-white/5 backdrop-blur-md">
+          <span className="text-accent-teal font-medium tracking-wide text-xs sm:text-sm uppercase">Welcome to The Chosen Vessel</span>
+        </div>
+
+        <h1 ref={titleRef} className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-montserrat font-bold text-white mb-6 md:mb-8 tracking-tight leading-tight">
+          Find Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-teal to-accent-gold">Sanctuary</span>
         </h1>
 
-        <p ref={textRef} className="max-w-4xl mx-auto mt-6 text-xl md:text-2xl text-light-text leading-relaxed">
-          A place of worship, community, and growth. Join Bishop Marvin L Sapp in our mission to build a brighter future together.
+        <p ref={textRef} className="text-base sm:text-lg md:text-2xl text-neutral-200 mb-8 md:mb-12 max-w-xl md:max-w-2xl mx-auto leading-relaxed font-light px-2">
+          A place where faith meets community. Join us in our mission to bring hope, healing, and purpose to every life we touch.
         </p>
 
-        <div ref={btnRef} className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-6">
-          <a
-            href="#donation"
-            className="px-10 py-4 rounded-lg font-montserrat font-bold text-white-text bg-accent-teal hover:scale-105 transform transition-all duration-300 shadow-xl text-lg"
-          >
-            Join Service
-          </a>
-          <a
-            href="#mission"
-            className="px-10 py-4 rounded-lg font-montserrat font-bold text-accent-teal bg-transparent border-2 border-accent-teal hover:bg-accent-teal hover:text-white-text transition-all duration-300 text-lg"
-          >
-            Our Mission
-          </a>
+        <div ref={btnRef} className="flex flex-col sm:flex-row gap-4 sm:gap-5 justify-center items-center w-full sm:w-auto px-4 sm:px-0">
+          <button className="w-full sm:w-auto px-8 py-3.5 sm:py-4 bg-accent-teal hover:bg-teal-500 text-white font-bold rounded-lg shadow-[0_0_20px_rgba(20,184,166,0.5)] hover:shadow-[0_0_30px_rgba(20,184,166,0.6)] transition-all duration-300 transform hover:-translate-y-1">
+            Join Service Live
+          </button>
+          <button className="w-full sm:w-auto px-8 py-3.5 sm:py-4 glass-panel border-white/30 text-white font-bold rounded-lg hover:bg-white/10 transition-all duration-300">
+            Our Ministries
+          </button>
         </div>
       </div>
-    </section>
+
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-white/50">
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        </svg>
+      </div>
+    </div>
   );
 }

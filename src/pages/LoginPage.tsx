@@ -21,16 +21,16 @@ export default function LoginPage() {
       setError('Failed to login. (Note: Firebase config is placeholder)');
       // For demo/dev purposes, force navigation if it's a specific mock email
       if (email === "demo@vessel.com" || email === "admin@vessel.com") {
-          // This hack won't work with the AuthContext real listener unless we mock the listener too.
-          // In AuthContext we are listening to onAuthStateChanged.
-          // Since we can't easily mock that without a mock auth provider, we might be stuck.
-          // BUT, I can manually trigger state updates in a real app, but here context is tied to Firebase.
+        // This hack won't work with the AuthContext real listener unless we mock the listener too.
+        // In AuthContext we are listening to onAuthStateChanged.
+        // Since we can't easily mock that without a mock auth provider, we might be stuck.
+        // BUT, I can manually trigger state updates in a real app, but here context is tied to Firebase.
 
-          // Workaround for evaluation: The AuthContext already has a fallback/mock structure?
-          // No, I implemented it with real Firebase listener.
+        // Workaround for evaluation: The AuthContext already has a fallback/mock structure?
+        // No, I implemented it with real Firebase listener.
 
-          // Let's just show the error. The user said "I'll add the firebase credentials... when you are done".
-          // So I should implement the REAL logic.
+        // Let's just show the error. The user said "I'll add the firebase credentials... when you are done".
+        // So I should implement the REAL logic.
       }
     }
   };
@@ -75,7 +75,7 @@ export default function LoginPage() {
         </form>
 
         <p className="mt-6 text-center text-gray-600">
-          Don't have an account? <Link to="/signup" className="text-accent-teal font-bold hover:underline">Join Vessel</Link>
+          Don't have an account? <Link to="/signup" className="text-accent-teal font-bold hover:underline">Join The Chosen Vessel</Link>
         </p>
       </div>
     </div>

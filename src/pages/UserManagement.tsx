@@ -1,128 +1,132 @@
-import { useState } from 'react';
-import { Trash2, Edit, Check, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Trash2, Shield, Crown } from 'lucide-react';
+import { db, COLLECTIONS } from '../services/db';
+import { collection, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 
 interface User {
-  id: string;
+  id: string; // firestore uid
   email: string;
+  displayName?: string;
   role: 'member' | 'admin';
-  status: 'active' | 'inactive';
-  joinedDate: string;
+  tier?: 'vessel' | 'golden_vessel'; // optional in schema, default to vessel
+  status?: 'active' | 'inactive'; // optional, maybe not used yet
+  createdAt?: any;
 }
 
-const MOCK_USERS: User[] = [
-  { id: '1', email: 'bishop@vessel.com', role: 'admin', status: 'active', joinedDate: '2025-01-01' },
-  { id: '2', email: 'member@vessel.com', role: 'member', status: 'active', joinedDate: '2025-01-02' },
-  { id: '3', email: 'newbie@vessel.com', role: 'member', status: 'inactive', joinedDate: '2025-01-10' },
-];
-
 export default function UserManagement() {
-  const [users, setUsers] = useState<User[]>(MOCK_USERS);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState<Partial<User>>({});
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this user?')) {
-      setUsers(users.filter(u => u.id !== id));
+
+  useEffect(() => {
+    // Real-time listener for users
+    const unsubscribe = onSnapshot(collection(db, COLLECTIONS.USERS), (snapshot) => {
+      const userList: User[] = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data() as User;
+        // Ensure id is present or fallback to doc.id
+        userList.push({ ...data, id: doc.id });
+      });
+      setUsers(userList);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching users:", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    if (confirm('Are you sure you completely delete this user profile? Only do this if the user is also deleted from Auth.')) {
+      try {
+        await deleteDoc(doc(db, COLLECTIONS.USERS, id));
+      } catch (e) {
+        alert("Error deleting: " + e);
+      }
     }
   };
 
-  const startEdit = (user: User) => {
-    setEditingId(user.id);
-    setEditForm(user);
-  };
 
-  const saveEdit = () => {
-    setUsers(users.map(u => u.id === editingId ? { ...u, ...editForm } : u));
-    setEditingId(null);
-  };
 
-  const cancelEdit = () => {
-    setEditingId(null);
-    setEditForm({});
-  };
+  const toggleAdmin = async (user: User) => {
+    const newRole = user.role === 'admin' ? 'member' : 'admin';
+    if (confirm(`Change role for ${user.email} to ${newRole}?`)) {
+      await updateDoc(doc(db, COLLECTIONS.USERS, user.id), { role: newRole });
+    }
+  }
+
+  const togglePremium = async (user: User) => {
+    const newTier = user.tier === 'golden_vessel' ? 'vessel' : 'golden_vessel';
+    if (confirm(`Change tier for ${user.email} to ${newTier === 'golden_vessel' ? 'Golden Vessel' : 'Standard Vessel'}?`)) {
+      await updateDoc(doc(db, COLLECTIONS.USERS, user.id), { tier: newTier });
+    }
+  }
+
+  if (loading) return <div>Loading Users...</div>;
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-montserrat font-bold text-gray-800">User Management</h1>
-        <button className="px-4 py-2 bg-primary-blue text-white rounded hover:bg-blue-700">
-            Add User
-        </button>
       </div>
 
       <div className="bg-white rounded-xl shadow overflow-hidden border border-gray-200">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Email</th>
+              <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">User</th>
               <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Role</th>
-              <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Tier</th>
               <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Joined</th>
               <th className="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {users.map((user) => (
-              <tr key={user.id}>
-                {editingId === user.id ? (
-                    <>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                            <input
-                                className="border rounded px-2 py-1 w-full"
-                                value={editForm.email}
-                                onChange={e => setEditForm({...editForm, email: e.target.value})}
-                            />
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                            <select
-                                className="border rounded px-2 py-1"
-                                value={editForm.role}
-                                onChange={e => setEditForm({...editForm, role: e.target.value as 'member' | 'admin'})}
-                            >
-                                <option value="member">Member</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                            <select
-                                className="border rounded px-2 py-1"
-                                value={editForm.status}
-                                onChange={e => setEditForm({...editForm, status: e.target.value as 'active' | 'inactive'})}
-                            >
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-gray-500">{user.joinedDate}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button onClick={saveEdit} className="text-green-600 hover:text-green-900 mr-2"><Check size={20} /></button>
-                            <button onClick={cancelEdit} className="text-red-600 hover:text-red-900"><X size={20} /></button>
-                        </td>
-                    </>
-                ) : (
-                    <>
-                        <td className="px-6 py-4 whitespace-nowrap text-gray-900">{user.email}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}`}>
-                                {user.role}
-                            </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                                {user.status}
-                            </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-gray-500">{user.joinedDate}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button onClick={() => startEdit(user)} className="text-indigo-600 hover:text-indigo-900 mr-4"><Edit size={18} /></button>
-                            <button onClick={() => handleDelete(user.id)} className="text-red-600 hover:text-red-900"><Trash2 size={18} /></button>
-                        </td>
-                    </>
-                )}
+              <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex flex-col">
+                    <span className="font-bold text-gray-900">{user.displayName || 'No Name'}</span>
+                    <span className="text-sm text-gray-500">{user.email}</span>
+                    <span className="text-xs text-gray-400 font-mono">{user.id}</span>
+                  </div>
+                </td>
+
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <button
+                    onClick={() => toggleAdmin(user)}
+                    className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold uppercase transition-all ${user.role === 'admin' ? 'bg-purple-100 text-purple-700 hover:bg-purple-200' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                  >
+                    {user.role === 'admin' && <Shield size={12} />}
+                    {user.role}
+                  </button>
+                </td>
+
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <button
+                    onClick={() => togglePremium(user)}
+                    className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold uppercase transition-all ${user.tier === 'golden_vessel' ? 'bg-amber-100 text-amber-700 hover:bg-amber-200' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}
+                  >
+                    {user.tier === 'golden_vessel' && <Crown size={12} />}
+                    {user.tier === 'golden_vessel' ? 'Golden' : 'Standard'}
+                  </button>
+                </td>
+
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {user.createdAt?.toDate ? user.createdAt.toDate().toLocaleDateString() : 'Unknown'}
+                </td>
+
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <button onClick={() => handleDelete(user.id)} className="text-red-400 hover:text-red-600 p-2 hover:bg-red-50 rounded-full transition-all" title="Delete Profile">
+                    <Trash2 size={18} />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
+        {users.length === 0 && <div className="p-8 text-center text-gray-500">No users found in database.</div>}
       </div>
     </div>
   );

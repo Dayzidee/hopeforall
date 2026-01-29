@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../lib/firebase';
+import { db, COLLECTIONS } from '../services/db';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
@@ -17,11 +19,25 @@ export default function SignupPage() {
     }
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Create User Profile in Firestore
+      await setDoc(doc(db, COLLECTIONS.USERS, user.uid), {
+        uid: user.uid,
+        email: user.email,
+        displayName: '',
+        role: 'member',
+        tier: 'vessel',
+        createdAt: serverTimestamp(),
+        lastLogin: serverTimestamp(),
+        badges: ['new_member']
+      });
+
       navigate('/dashboard');
     } catch (err: any) {
       console.error(err);
-      setError('Failed to create account. (Firebase placeholder)');
+      setError('Failed to create account. ' + err.message);
     }
   };
 

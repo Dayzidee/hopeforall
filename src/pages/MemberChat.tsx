@@ -1,14 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { db } from '../services/db';
+import { collection, query, orderBy, onSnapshot, addDoc, serverTimestamp } from 'firebase/firestore';
 
 export default function MemberChat() {
   const { user } = useAuth();
-  const [messages, setMessages] = useState([
-    { id: 1, user: "System", text: "Welcome to the community chat!", time: "10:00 AM" },
-    { id: 2, user: "Sister Mary", text: "Good morning everyone! Blessed Sunday.", time: "10:05 AM" },
-  ]);
+  const [messages, setMessages] = useState<any[]>([]);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Subscribe to messages
+    const q = query(collection(db, "community_messages"), orderBy("createdAt", "asc"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const msgs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setMessages(msgs);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -16,32 +25,35 @@ export default function MemberChat() {
 
   useEffect(scrollToBottom, [messages]);
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || !user) return;
 
-    const newMessage = {
-      id: Date.now(),
-      user: user?.email?.split('@')[0] || "Anonymous",
-      text: input,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    };
-
-    setMessages([...messages, newMessage]);
-    setInput('');
+    try {
+      await addDoc(collection(db, "community_messages"), {
+        text: input,
+        user: user.email?.split('@')[0] || "Anonymous", // Simple display name
+        userId: user.uid,
+        createdAt: serverTimestamp(),
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) // Client side time for immediate display, serverTimestamp for sorting
+      });
+      setInput('');
+    } catch (err) {
+      console.error("Error sending message", err);
+    }
   };
 
   return (
     <div className="h-[calc(100vh-8rem)] flex flex-col bg-white-text rounded-xl shadow-lg border border-gray-200 overflow-hidden">
       <div className="p-4 bg-primary-blue text-white-text flex justify-between items-center">
         <h2 className="font-montserrat font-bold">Community Chat</h2>
-        <span className="text-sm bg-accent-teal px-2 py-1 rounded-full">Online: 24</span>
+        <span className="text-sm bg-accent-teal px-2 py-1 rounded-full">Live</span>
       </div>
 
       <div className="flex-grow overflow-y-auto p-4 space-y-4 bg-gray-50">
         {messages.map((msg) => (
-          <div key={msg.id} className={`flex flex-col ${msg.user === user?.email?.split('@')[0] ? 'items-end' : 'items-start'}`}>
-            <div className={`max-w-[80%] px-4 py-2 rounded-lg shadow-sm ${msg.user === user?.email?.split('@')[0] ? 'bg-primary-blue text-white-text rounded-br-none' : 'bg-white text-dark-text rounded-bl-none'}`}>
+          <div key={msg.id} className={`flex flex-col ${msg.userId === user?.uid ? 'items-end' : 'items-start'}`}>
+            <div className={`max-w-[80%] px-4 py-2 rounded-lg shadow-sm ${msg.userId === user?.uid ? 'bg-primary-blue text-white-text rounded-br-none' : 'bg-white text-dark-text rounded-bl-none'}`}>
               <div className="text-xs font-bold opacity-75 mb-1">{msg.user}</div>
               <p>{msg.text}</p>
             </div>
